@@ -81,7 +81,12 @@ test("platform passkey signs in and roaming key performs replay-resistant step-u
     .toBeVisible();
 
   await page.goto("/methods/password");
+  const signedOut = page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/auth/sign-out") && response.ok()
+  );
   await page.getByRole("button", { name: "Sign out" }).click();
+  await signedOut;
   await page.goto("/methods/passkey");
   await page.getByRole("button", { name: "Sign in with a passkey" }).click();
   await expect(page.getByText(/opaque session is active/i)).toBeVisible();
@@ -117,7 +122,7 @@ test("platform passkey signs in and roaming key performs replay-resistant step-u
     "/api/lab/passkeys/step-up/verify",
     {
       data: verificationBody,
-      headers: { origin: "http://localhost:3000" }
+      headers: { origin: new URL(page.url()).origin }
     }
   );
   expect(replay.status()).toBe(409);

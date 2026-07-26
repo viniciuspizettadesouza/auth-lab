@@ -21,7 +21,7 @@ describe("authentication method catalog", () => {
     ).toBe(true);
   });
 
-  it("exposes only the implemented interactive authentication method", () => {
+  it("exposes only the implemented interactive primary authentication method", () => {
     const interactiveAuthentication = authenticationMethods.filter(
       (method) =>
         method.category === "Authentication" && method.status === "interactive"
@@ -29,6 +29,15 @@ describe("authentication method catalog", () => {
     expect(interactiveAuthentication.map((method) => method.slug)).toEqual([
       "password"
     ]);
+  });
+
+  it("publishes OIDC as interactive and SAML as a clearly labelled simulation", () => {
+    expect(
+      authenticationMethods.find((method) => method.slug === "oidc")?.status
+    ).toBe("interactive");
+    expect(
+      authenticationMethods.find((method) => method.slug === "saml")?.status
+    ).toBe("simulation");
   });
 
   it("provides every evolution classification and complete evidence metadata", () => {

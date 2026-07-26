@@ -5,7 +5,12 @@ import { passkey } from "@better-auth/passkey";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { emailOTP, magicLink, twoFactor } from "better-auth/plugins";
+import {
+  emailOTP,
+  genericOAuth,
+  magicLink,
+  twoFactor
+} from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
@@ -36,6 +41,11 @@ import {
   setFlowStatus
 } from "@/services/recorder/service";
 import { getVisitorIdFromHeaders } from "@/lib/visitor";
+import {
+  federationConfig,
+  LOCAL_OIDC_PROVIDER_ID
+} from "@/features/federation/server/config";
+import { exchangeAuthorizationCode } from "@/features/federation/server/provider";
 
 function requestContext(request?: Request | null) {
   const flowId = request?.headers.get("x-auth-flow-id") ?? null;
@@ -46,6 +56,7 @@ function requestContext(request?: Request | null) {
 }
 
 const relyingParty = webauthnRelyingParty();
+const federation = federationConfig();
 
 const prospectivePasswordPaths = new Set([
   "/sign-up/email",
@@ -158,6 +169,15 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
     freshAge: 60 * 30
+  },
+  account: {
+    encryptOAuthTokens: true,
+    accountLinking: {
+      enabled: true,
+      disableImplicitLinking: true,
+      allowDifferentEmails: false,
+      allowUnlinkingAll: false
+    }
   },
   rateLimit: {
     enabled: true,
@@ -273,6 +293,39 @@ export const auth = betterAuth({
     }
   },
   plugins: [
+    genericOAuth({
+      config: [
+        {
+          providerId: LOCAL_OIDC_PROVIDER_ID,
+          issuer: federation.issuer,
+          requireIssuerValidation: true,
+          authorizationUrl: `${federation.issuer}/authorize`,
+          tokenUrl: `${federation.issuer}/token`,
+          clientId: federation.clientId,
+          clientSecret: federation.clientSecret,
+          scopes: ["openid", "profile", "email"],
+          pkce: true,
+          prompt: "consent",
+          authorizationUrlParams: (ctx) => ({
+            nonce: federation.createNonce(),
+            flow:
+              typeof ctx.body?.additionalData?.flowId === "string"
+                ? ctx.body.additionalData.flowId
+                : ""
+          }),
+          async getToken({ code, codeVerifier, redirectURI }) {
+            if (!codeVerifier) throw new Error("missing_code_verifier");
+            return exchangeAuthorizationCode({
+              clientId: federation.clientId,
+              clientSecret: federation.clientSecret,
+              code,
+              codeVerifier,
+              redirectUri: redirectURI
+            });
+          }
+        }
+      ]
+    }),
     passkey({
       rpName: "Auth Lab",
       rpID: relyingParty.rpID,

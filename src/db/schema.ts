@@ -3,6 +3,7 @@ export * from "@/db/schema/recorder";
 
 import {
   account,
+  oidcAuthorizationCode,
   passkey,
   passkeyKind,
   session,
@@ -20,6 +21,7 @@ export const schema = {
   user,
   session,
   account,
+  oidcAuthorizationCode,
   passkey,
   passkeyKind,
   verification,

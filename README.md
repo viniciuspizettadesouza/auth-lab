@@ -41,6 +41,17 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
 - Authenticated passkey linking, credential inventory and revocation, explicit
   synced versus device-bound recovery guidance, downgrade-resistant failures,
   and roaming security-key step-up that does not create another session
+- OpenID Connect Authorization Code with S256 PKCE against a synthetic local
+  provider, including discovery, consent, exact callback and issuer checks,
+  signed and expiring nonce-bound ID tokens, one-minute single-use codes, and
+  encrypted provider-token storage
+- Federated sign-up and sign-in, explicit account linking, conflicting-email
+  rejection, provider-subject ownership, safe unlinking, and local-session
+  creation without treating OAuth authorization as authentication
+- A clearly labelled SAML enterprise SSO simulation covering issuer metadata,
+  signatures, request correlation, audience, destination, time windows,
+  replay, certificate rollover, and account-linking boundaries without
+  accepting executable XML or creating a session
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -100,6 +111,9 @@ npm run build
 
 `db:seed` creates `demo@auth-lab.local` with password
 `correct horse battery staple`; verify it through Mailpit before signing in.
+The local OpenID Provider offers two independent synthetic identities and this
+same demo email as an intentional conflict case. It never asks for or stores a
+real external-provider credential.
 `db:reset` deletes all Auth Lab records while retaining the schema.
 
 ## Tests
@@ -127,6 +141,12 @@ npm run test:e2e
 Override `PLAYWRIGHT_BASE_URL` or `MAILPIT_API_URL` when the services are not on
 their default local ports.
 
+The OIDC lifecycle E2E test runs on desktop and mobile projects and traverses
+the actual relying-party → provider → callback redirects. The local provider
+uses a development-only symmetric ID-token signature because both roles live
+inside one process. A real external adapter should use provider discovery and
+asymmetric signature verification; never reuse the local signing arrangement.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -150,13 +170,20 @@ their default local ports.
   labs, TOTP ceremony, SMS simulator, and replay-defense boundaries.
 - `src/features/passkey` contains the passkey adapter, real WebAuthn lab,
   relying-party policy, and session-bound security-key step-up ceremony.
+- `src/features/federation` contains the OIDC and SAML adapters, protocol
+  primitives, local-provider boundary, five educational views, explicit
+  linking/unlinking policy, and safe conflict demonstrations.
+- `drizzle/0004_shiny_christian_walker.sql` adds atomically consumable,
+  one-minute authorization codes bound to the client, redirect URI, nonce,
+  subject, and S256 PKCE challenge.
 - `drizzle/0003_easy_gressill.sql` adds public-key credential storage,
   passkey/security-key assurance labels, and atomically consumable WebAuthn
   step-up challenges. Magic-link, email-OTP, and ordinary passkey challenges
   reuse Better Auth's verification store.
-- `src/services/auth/service.ts` configures Better Auth, email delivery, session
-  policy, database hooks, prospective-password screening, and endpoint rate
-  limits.
+- `src/services/auth/service.ts` configures Better Auth, local OIDC federation,
+  encrypted OAuth-token storage, deliberate account linking, email delivery,
+  session policy, database hooks, prospective-password screening, and endpoint
+  rate limits.
 - `src/features/password/server/credentials.ts` owns the NIST-aligned length
   boundary and the auditable local password blocklist. A production deployment
   should replace the demonstrative corpus with a substantially larger,

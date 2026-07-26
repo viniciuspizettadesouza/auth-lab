@@ -176,13 +176,19 @@ supports them and has a safe recovery strategy—not as a universal mandate.
 
 ### Milestone 5 — Federation evolution
 
-**Status:** Planned
+**Status:** Complete
+
+Completed on 2026-07-26. Local OpenID Connect Authorization Code with PKCE,
+discovery, consent, signed ID-token validation, account lifecycle and conflict
+handling, encrypted provider tokens, five educational views, and the safe SAML
+enterprise simulation are documented in the [README](../README.md).
 
 **Estimate:** 1–2 weeks
 
 - Explain the path from local credentials and SAML to modern OpenID Connect.
 - Implement OpenID Connect Authorization Code with PKCE using a local provider
-  first, then optional Google, GitHub, Microsoft, or Apple adapters.
+  first. Google, GitHub, Microsoft, or Apple remain optional operator adapters
+  because they require external credentials and provider-specific review.
 - Visualize redirect, `state`, `nonce`, PKCE, callback, token exchange, consent,
   and local session creation.
 - Implement account linking, conflicting identities, provider unlinking, and

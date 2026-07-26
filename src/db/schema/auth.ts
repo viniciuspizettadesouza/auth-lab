@@ -171,6 +171,28 @@ export const webauthnChallenge = pgTable(
   ]
 );
 
+export const oidcAuthorizationCode = pgTable(
+  "oidc_authorization_codes",
+  {
+    id: text("id").primaryKey(),
+    clientId: text("client_id").notNull(),
+    redirectUri: text("redirect_uri").notNull(),
+    subject: text("subject").notNull(),
+    email: text("email").notNull(),
+    name: text("name").notNull(),
+    nonce: text("nonce").notNull(),
+    codeChallenge: text("code_challenge").notNull(),
+    scope: text("scope").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [
+    index("oidc_authorization_codes_expires_at_idx").on(table.expiresAt),
+    index("oidc_authorization_codes_subject_idx").on(table.subject)
+  ]
+);
+
 export const authSchema = {
   users: user,
   sessions: session,
