@@ -25,7 +25,7 @@ These classifications are contextual. A method is not “secure” in isolation:
 recovery, enrollment, implementation, user population, threat model, and
 operational controls all affect the result.
 
-The map will support four parallel learning tracks so that unlike concepts are
+The map will support five parallel learning tracks so that unlike concepts are
 not ranked as if they were substitutes:
 
 1. **Human authentication and MFA** — passwords, OTP, passkeys, security keys,
@@ -34,7 +34,9 @@ not ranked as if they were substitutes:
    provider login, and consent.
 3. **Sessions and tokens** — server sessions, cookies, JWTs, rotation,
    revocation, and sender-constrained tokens.
-4. **Machine and workload identity** — API keys, service accounts, client
+4. **Special environments** — constrained-device authorization and managed,
+   high-assurance client credentials.
+5. **Machine and workload identity** — API keys, service accounts, client
    credentials, certificates, and workload identity.
 
 Each method page will show **Then / Now / Next**: what problem the method solved,

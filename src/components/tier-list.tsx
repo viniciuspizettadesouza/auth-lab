@@ -1,6 +1,7 @@
 import {
-  authenticationMethods,
-  consumerWebTierList
+  tierGrades,
+  tieredMethods,
+  tierTracks
 } from "@/lib/catalog";
 
 export function TierList() {
@@ -12,55 +13,77 @@ export function TierList() {
             <span aria-hidden="true" />
             ranking.profile
           </span>
-          <strong>New consumer web application</strong>
+          <strong>Authentication architecture · five tracks</strong>
           <div className="tier-context-tags" aria-label="Ranking context">
-            <span>consumer</span>
             <span>web</span>
+            <span>local lab</span>
             <span>2026.07</span>
           </div>
         </div>
         <div className="tier-context-note">
-          <span className="tier-context-label">scope.note</span>
+          <span className="tier-context-label">ranking.rule</span>
           <p>
-            Opinionated, not universal. Recovery, enrollment, implementation,
-            and threat model can move a method.
+            Every catalog method is ranked inside the track where it belongs.
+            Grades compare alternatives with similar responsibilities.
           </p>
         </div>
       </div>
 
-      <div className="tier-list" role="table" aria-label="Authentication method tier list">
-        {consumerWebTierList.map((tier) => {
-          const methods = tier.methodSlugs.flatMap((slug) => {
-            const method = authenticationMethods.find(
-              (candidate) => candidate.slug === slug
-            );
-            return method ? [method] : [];
-          });
+      <div className="tier-list">
+        {tierTracks.map((track) => {
+          const trackMethods = tieredMethods.filter(
+            (method) => method.tier.track === track.name
+          );
 
           return (
-            <div className="tier-row" role="row" key={tier.grade}>
+            <section className="tier-track" key={track.name}>
+              <header className="tier-track-header">
+                <h3>{track.name}</h3>
+                <p>{track.context}</p>
+              </header>
+
               <div
-                className="tier-grade"
-                role="rowheader"
-                aria-label={`Tier ${tier.grade}`}
+                role="table"
+                aria-label={`${track.name} authentication method tiers`}
               >
-                <span>{tier.grade}</span>
-                <small>tier</small>
+                {tierGrades.map((grade) => {
+                  const methods = trackMethods.filter(
+                    (method) => method.tier.grade === grade
+                  );
+
+                  if (methods.length === 0) {
+                    return null;
+                  }
+
+                  return (
+                    <div
+                      className={`tier-row tier-${grade.toLowerCase()}`}
+                      role="row"
+                      key={grade}
+                    >
+                      <div
+                        className="tier-grade"
+                        role="rowheader"
+                        aria-label={`Tier ${grade}`}
+                      >
+                        <span>{grade}</span>
+                        <small>tier</small>
+                      </div>
+                      <div className="tier-assessments" role="cell">
+                        {methods.map((method) => (
+                          <div className="tier-assessment" key={method.slug}>
+                            <span className="tier-method">
+                              {method.shortName}
+                            </span>
+                            <p>{method.tier.rationale}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="tier-content" role="cell">
-                <div className="tier-methods">
-                  {methods.map((method) => (
-                    <span className="tier-method" key={method.slug}>
-                      {method.shortName}
-                    </span>
-                  ))}
-                </div>
-                <div className="tier-explanation">
-                  <strong>{tier.label}</strong>
-                  <span>{tier.rationale}</span>
-                </div>
-              </div>
-            </div>
+            </section>
           );
         })}
       </div>
@@ -68,8 +91,9 @@ export function TierList() {
       <div className="tier-exclusions">
         <span aria-hidden="true">↳</span>
         <p>
-          Sessions, tokens, special-device flows, and machine credentials are
-          intentionally unranked here. They belong to separate tracks.
+          Grades are relative within each track, not across tracks. For example,
+          an A-tier session does not replace an S-tier authenticator; an
+          application may need both.
         </p>
       </div>
     </div>

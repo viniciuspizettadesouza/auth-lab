@@ -39,8 +39,9 @@ Every interactive method should eventually provide the same five views:
    responses, timing, and relevant protocol properties.
 4. **Explanation** — what is provided, stored, and verified; how recovery works;
    and what the operational and security risks are.
-5. **Comparison** — contextual trade-offs against other methods rather than
-   universal scores.
+5. **Comparison** — observable trade-offs remain primary. A tier may summarize
+   them only for a declared scenario, evidence date, and comparable track; it is
+   never a universal security score.
 
 ## Delivery
 

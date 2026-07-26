@@ -62,8 +62,9 @@ export default function HomePage() {
               <h2>Trade-offs, not scores.</h2>
             </div>
             <p>
-              These ratings are prompts for architectural analysis. Deployment,
-              recovery policy, and provider behavior can change every result.
+              Every catalog method appears here. Read ratings within its track:
+              deployment, recovery policy, and provider behavior can change
+              every result.
             </p>
           </div>
           <ComparisonTable />

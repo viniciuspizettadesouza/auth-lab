@@ -15,7 +15,8 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
 - Mailpit verification and reset emails
 - Visitor/user-owned authentication flow history
 - Ordered flow diagram and sanitized network inspector
-- Educational catalog, contextual comparison, and a scenario-bound 2026 tier list
+- Educational catalog, complete contextual comparison, and track-specific 2026
+  tier lists covering every catalog method
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -104,6 +105,9 @@ their default local ports.
 
 ## Architecture
 
+- `src/lib/catalog.ts` is the typed source of truth for method metadata,
+  comparison ratings, tier track, grade, and rationale. The catalog, comparison,
+  and tier views consume the same collection.
 - `src/lib/auth.ts` configures Better Auth, email delivery, session policy, and
   database hooks.
 - `src/lib/recorder.ts` owns ordered event persistence and ownership checks.

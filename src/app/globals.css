@@ -378,7 +378,7 @@ code,
 
 .comparison-table {
   width: 100%;
-  min-width: 760px;
+  min-width: 1120px;
   border-collapse: collapse;
   background: rgba(11,22,19,.8);
 }
@@ -401,8 +401,43 @@ code,
   font-size: 14px;
 }
 
+.comparison-table th:first-child,
+.comparison-table td:first-child {
+  width: 170px;
+}
+
+.comparison-table th:nth-child(2),
+.comparison-table td:nth-child(2) {
+  width: 190px;
+}
+
 .comparison-table tr:last-child td {
   border-bottom: 0;
+}
+
+.comparison-method,
+.comparison-protocol {
+  display: block;
+}
+
+.comparison-method {
+  margin-bottom: 5px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.comparison-protocol {
+  color: var(--cyan);
+  font: 9px/1.3 "SFMono-Regular", Consolas, monospace;
+}
+
+.comparison-track {
+  display: inline-flex;
+  padding: 5px 7px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: 9px/1.25 "SFMono-Regular", Consolas, monospace;
 }
 
 .rating {
@@ -425,6 +460,8 @@ code,
 .rating.medium::before { background: var(--amber); }
 .rating.low::before { background: var(--red); }
 .rating.depends::before { background: var(--cyan); }
+.rating.not-applicable { color: var(--faint); }
+.rating.not-applicable::before { background: var(--line-bright); }
 
 .tier-heading {
   display: grid;
@@ -527,6 +564,35 @@ code,
   background: rgba(7, 16, 14, .18);
 }
 
+.tier-track + .tier-track {
+  border-top: 1px solid var(--line-bright);
+}
+
+.tier-track-header {
+  display: grid;
+  grid-template-columns: minmax(230px, .7fr) minmax(320px, 1.3fr);
+  gap: 36px;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(16, 29, 25, .55);
+}
+
+.tier-track-header h3 {
+  margin: 0;
+  color: var(--accent);
+  font: 11px/1.3 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.tier-track-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .tier-row {
   --tier-color: var(--muted);
   display: grid;
@@ -541,11 +607,11 @@ code,
   border-bottom: 0;
 }
 
-.tier-row:nth-child(1) { --tier-color: var(--accent); }
-.tier-row:nth-child(2) { --tier-color: var(--cyan); }
-.tier-row:nth-child(3) { --tier-color: #9bd08a; }
-.tier-row:nth-child(4) { --tier-color: var(--amber); }
-.tier-row:nth-child(5) { --tier-color: var(--red); }
+.tier-row.tier-s { --tier-color: var(--accent); }
+.tier-row.tier-a { --tier-color: var(--cyan); }
+.tier-row.tier-b { --tier-color: #9bd08a; }
+.tier-row.tier-c { --tier-color: var(--amber); }
+.tier-row.tier-d { --tier-color: var(--red); }
 
 .tier-row:hover {
   background: color-mix(in srgb, var(--tier-color) 3%, transparent);
@@ -575,18 +641,19 @@ code,
   text-transform: uppercase;
 }
 
-.tier-content {
+.tier-assessments {
   display: grid;
-  grid-template-columns: minmax(220px, .72fr) minmax(340px, 1.28fr);
-  gap: 36px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 14px 32px;
   align-items: center;
   padding: 20px 24px;
 }
 
-.tier-methods {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.tier-assessment {
+  display: grid;
+  grid-template-columns: minmax(120px, .42fr) minmax(240px, 1.58fr);
+  gap: 18px;
+  align-items: center;
 }
 
 .tier-method {
@@ -612,17 +679,8 @@ code,
   transform: translateY(-50%);
 }
 
-.tier-explanation {
-  display: grid;
-  gap: 6px;
-}
-
-.tier-explanation strong {
-  font-size: 13px;
-  letter-spacing: -.005em;
-}
-
-.tier-explanation span {
+.tier-assessment p {
+  margin: 0;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
@@ -1213,9 +1271,11 @@ code,
   .tier-heading,
   .tier-context { grid-template-columns: 1fr; gap: 16px; }
   .tier-heading { align-items: start; margin-top: 56px; }
+  .tier-track-header { grid-template-columns: 1fr; gap: 7px; }
   .tier-row { grid-template-columns: 64px minmax(0, 1fr); }
   .tier-grade span { font-size: 26px; }
-  .tier-content { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+  .tier-assessments { grid-template-columns: 1fr; padding: 16px; }
+  .tier-assessment { grid-template-columns: 1fr; gap: 9px; }
   .lab-grid { grid-template-columns: 1fr; }
   .lab-panel.wide { grid-column: auto; }
   .explanation-grid { grid-template-columns: 1fr; }
