@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -14,6 +15,7 @@ export const user = pgTable(
     name: text("name").notNull(),
     email: text("email").notNull(),
     emailVerified: boolean("email_verified").default(false).notNull(),
+    twoFactorEnabled: boolean("two_factor_enabled").default(false).notNull(),
     image: text("image"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
@@ -88,12 +90,36 @@ export const verification = pgTable(
       .$onUpdate(() => new Date())
       .notNull()
   },
-  (table) => [index("verifications_identifier_idx").on(table.identifier)]
+  (table) => [
+    uniqueIndex("verifications_identifier_idx").on(table.identifier)
+  ]
+);
+
+export const twoFactor = pgTable(
+  "two_factors",
+  {
+    id: text("id").primaryKey(),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    verified: boolean("verified").default(false).notNull(),
+    failedVerificationCount: integer("failed_verification_count")
+      .default(0)
+      .notNull(),
+    lockedUntil: timestamp("locked_until", { withTimezone: true })
+  },
+  (table) => [
+    index("two_factors_secret_idx").on(table.secret),
+    index("two_factors_user_id_idx").on(table.userId)
+  ]
 );
 
 export const authSchema = {
   users: user,
   sessions: session,
   accounts: account,
-  verifications: verification
+  verifications: verification,
+  twoFactors: twoFactor
 };

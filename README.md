@@ -27,6 +27,13 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
 - Five independently composed password panels coordinated by one controller
   hook, with authentication, recorder, and session service boundaries
 - Separate Better Auth and educational-recorder database schemas
+- Five-minute, atomically single-use magic-link authentication through Mailpit
+- Six-digit email OTP with hashed storage, rotation, expiry, attempt limits,
+  session creation, and replay rejection
+- TOTP enrollment with QR transfer, confirmation, required password step-up,
+  replay defense, account lockout, encrypted recovery codes, and removal
+- A clearly labelled local SMS OTP simulation covering interception,
+  number-recycling, expiry, attempts, consumption, replay, delivery, and cost
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -132,6 +139,11 @@ their default local ports.
 - `src/db/schema/auth.ts` and `src/db/schema/recorder.ts` keep authentication
   library persistence separate from educational flow persistence while
   retaining the committed database schema.
+- `src/features/link-code` contains the Milestone 3 adapters, real link/code
+  labs, TOTP ceremony, SMS simulator, and replay-defense boundaries.
+- `drizzle/0001_clever_sabra.sql` adds only the TOTP enrollment table and the
+  Better Auth user flag; magic-link and email-OTP proofs reuse the verification
+  store.
 - `src/services/auth/service.ts` configures Better Auth, email delivery, session
   policy, database hooks, prospective-password screening, and endpoint rate
   limits.

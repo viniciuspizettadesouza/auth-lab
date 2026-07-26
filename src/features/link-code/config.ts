@@ -1,0 +1,16 @@
+export const MAGIC_LINK_EXPIRES_IN_SECONDS = 5 * 60;
+export const MAGIC_LINK_REQUESTS_PER_MINUTE = 5;
+
+export const EMAIL_OTP_EXPIRES_IN_SECONDS = 5 * 60;
+export const EMAIL_OTP_LENGTH = 6;
+export const EMAIL_OTP_ALLOWED_ATTEMPTS = 3;
+export const EMAIL_OTP_REQUESTS_PER_MINUTE = 3;
+
+export const TOTP_DIGITS = 6;
+export const TOTP_PERIOD_SECONDS = 30;
+export const TOTP_ACCOUNT_FAILURE_LIMIT = 5;
+export const TOTP_LOCK_SECONDS = 5 * 60;
+export const TOTP_REPLAY_WINDOW_SECONDS = 90;
+
+export const SMS_SIMULATION_EXPIRES_IN_SECONDS = 2 * 60;
+export const SMS_SIMULATION_ALLOWED_ATTEMPTS = 3;

@@ -127,7 +127,11 @@ Prepare the implementation boundary before adding another working method:
 
 ### Milestone 3 — Link and code authentication
 
-**Status:** Planned
+**Status:** Complete
+
+Completed on 2026-07-26. Magic link, email OTP, authenticator-app TOTP, encrypted
+recovery codes, step-up, removal, replay handling, and the labelled local SMS
+simulation are documented in the [README](../README.md).
 
 **Estimate:** 3–5 days
 

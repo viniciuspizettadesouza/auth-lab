@@ -57,6 +57,7 @@ export const passwordMethodAdapter = {
       recovery: "high"
     }
   },
+  route: "/methods/password",
   panels: [
     { id: "user-experience", title: "User experience", note: "Real flow" },
     { id: "flow", title: "Flow", note: "Ordered events" },

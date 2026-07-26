@@ -8,6 +8,20 @@
       "when": 1785024112819,
       "tag": "0000_amazing_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1785070551120,
+      "tag": "0001_clever_sabra",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785071646588,
+      "tag": "0002_dear_wong",
+      "breakpoints": true
     }
   ]
 }

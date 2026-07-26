@@ -1,12 +1,21 @@
 import { createAuthMiddleware } from "better-auth/api";
 import type { BetterAuthPlugin } from "better-auth";
 
-import { appendOwnedEvent } from "@/services/recorder/service";
+import {
+  appendOwnedEvent,
+  attachFlowToUser,
+  setFlowStatus
+} from "@/services/recorder/service";
 import { getVisitorIdFromHeaders } from "@/lib/visitor";
 
 export type AuthEndpointDescriptions = Record<
   string,
-  { action: string; description: string; fields: readonly string[] }
+  {
+    action: string;
+    description: string;
+    fields: readonly string[];
+    completesSession?: boolean;
+  }
 >;
 
 function nestedFlowId(value: unknown): string | null {
@@ -50,6 +59,28 @@ export function createAuthRecorderPlugin(
               : null;
             if (!template || !flowId || !visitorId) return;
 
+            if (template.completesSession && ctx.context.newSession) {
+              await attachFlowToUser(
+                flowId,
+                ctx.context.newSession.user.id
+              );
+              await appendOwnedEvent(flowId, visitorId, {
+                actor: "database",
+                action: "session.created",
+                description:
+                  "The consumed proof created a revocable database session and opaque browser cookie.",
+                outcome: "success",
+                metadata: {
+                  entityId: ctx.context.newSession.session.id,
+                  cookieFlags: {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "lax"
+                  }
+                }
+              });
+              await setFlowStatus(flowId, "completed");
+            }
             await appendOwnedEvent(flowId, visitorId, {
               actor: "browser",
               action: template.action,

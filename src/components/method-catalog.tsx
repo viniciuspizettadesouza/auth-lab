@@ -12,6 +12,7 @@ import {
   methodStatusLabels,
   type LearningTrack
 } from "@/lib/catalog";
+import { getMethodAdapter } from "@/features/method-registry";
 
 type TrackFilter = "all" | LearningTrack;
 
@@ -89,10 +90,10 @@ export function MethodCatalog() {
                 <div className="evolution-methods">
                   {methods.map((method) => {
                     const href =
-                      method.slug === "password" ||
-                      method.slug === "cookie-session"
+                      getMethodAdapter(method.slug)?.route ??
+                      (method.slug === "cookie-session"
                         ? "/methods/password"
-                        : null;
+                        : null);
                     const content = (
                       <>
                         <div className="method-card-top">

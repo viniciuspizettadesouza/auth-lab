@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { defaultMethod } from "@/features/method-registry";
+import {
+  defaultMethod,
+  getMethodAdapter
+} from "@/features/method-registry";
 import { auth } from "@/lib/auth";
 import {
   clearOwnedFlows,
@@ -30,10 +33,22 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const parsed = defaultMethod.journeySchema.safeParse(
-    (await request.json() as { journey?: unknown }).journey
-  );
-  if (!parsed.success) {
+  const body = await request.json() as {
+    journey?: unknown;
+    method?: unknown;
+  };
+  const method =
+    typeof body.method === "string"
+      ? getMethodAdapter(body.method)
+      : defaultMethod.adapter;
+  const journey =
+    typeof body.journey === "string" &&
+    method?.recorder.journeys.some(
+      (candidate: string) => candidate === body.journey
+    )
+      ? body.journey
+      : null;
+  if (!method || !journey) {
     return NextResponse.json(
       { error: "Invalid authentication journey." },
       { status: 400 }
@@ -44,8 +59,8 @@ export async function POST(request: NextRequest) {
   const visitorId = existingVisitorId ?? createVisitorId();
   const flow = await startFlow(
     visitorId,
-    parsed.data,
-    defaultMethod.adapter.metadata.slug
+    journey,
+    method.metadata.slug
   );
   const response = NextResponse.json({ flow }, { status: 201 });
   if (!existingVisitorId) setVisitorCookie(response, visitorId);

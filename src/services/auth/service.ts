@@ -4,11 +4,25 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
+import { emailOTP, magicLink, twoFactor } from "better-auth/plugins";
+import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { authSchema } from "@/db/schema";
+import { authSchema, user } from "@/db/schema";
 import { authRecorderPlugin } from "@/features/password/server/auth-recorder-plugin";
-import { sendAuthEmail } from "@/lib/email";
+import {
+  EMAIL_OTP_ALLOWED_ATTEMPTS,
+  EMAIL_OTP_EXPIRES_IN_SECONDS,
+  EMAIL_OTP_LENGTH,
+  EMAIL_OTP_REQUESTS_PER_MINUTE,
+  MAGIC_LINK_EXPIRES_IN_SECONDS,
+  MAGIC_LINK_REQUESTS_PER_MINUTE,
+  TOTP_ACCOUNT_FAILURE_LIMIT,
+  TOTP_DIGITS,
+  TOTP_LOCK_SECONDS,
+  TOTP_PERIOD_SECONDS
+} from "@/features/link-code/config";
+import { sendAuthCodeEmail, sendAuthEmail } from "@/lib/email";
 import {
   MAX_PASSWORD_LENGTH,
   MIN_PASSWORD_LENGTH,
@@ -222,13 +236,22 @@ export const auth = betterAuth({
             ? getVisitorIdFromHeaders(ctx.headers)
             : null;
           if (!flowId || !visitorId) return;
+          const [owner] = await db
+            .select({ twoFactorEnabled: user.twoFactorEnabled })
+            .from(user)
+            .where(eq(user.id, createdSession.userId))
+            .limit(1);
           await attachFlowToUser(flowId, createdSession.userId);
           await appendOwnedEvent(flowId, visitorId, {
             actor: "database",
-            action: "session.created",
+            action: owner?.twoFactorEnabled
+              ? "session.pending-step-up"
+              : "session.created",
             description:
-              "The database stored a revocable session and the browser received an opaque cookie.",
-            outcome: "success",
+              owner?.twoFactorEnabled
+                ? "The primary factor matched, but the provisional session remains unusable until TOTP step-up."
+                : "The database stored a revocable session and the browser received an opaque cookie.",
+            outcome: owner?.twoFactorEnabled ? "pending" : "success",
             metadata: {
               entityId: createdSession.id,
               cookieFlags: {
@@ -238,12 +261,96 @@ export const auth = betterAuth({
               }
             }
           });
-          await setFlowStatus(flowId, "completed");
+          if (!owner?.twoFactorEnabled) {
+            await setFlowStatus(flowId, "completed");
+          }
         }
       }
     }
   },
-  plugins: [authRecorderPlugin(), nextCookies()]
+  plugins: [
+    magicLink({
+      expiresIn: MAGIC_LINK_EXPIRES_IN_SECONDS,
+      storeToken: "hashed",
+      rateLimit: { window: 60, max: MAGIC_LINK_REQUESTS_PER_MINUTE },
+      async sendMagicLink({ email, url }, ctx) {
+        const flowId = ctx?.headers?.get("x-auth-flow-id");
+        const visitorId = ctx?.headers
+          ? getVisitorIdFromHeaders(ctx.headers)
+          : null;
+        if (flowId && visitorId) {
+          await appendOwnedEvent(flowId, visitorId, {
+            actor: "email",
+            action: "magic-link.email-queued",
+            description:
+              "The application queued a five-minute single-use link in Mailpit.",
+            outcome: "success",
+            metadata: { email, endpoint: "/magic-link/verify" }
+          });
+        }
+        await sendAuthEmail({
+          to: email,
+          subject: "Sign in to Auth Lab with a magic link",
+          heading: "Your single-use sign-in link",
+          message:
+            "This bearer link expires in five minutes and is consumed by its first verification attempt.",
+          actionLabel: "Sign in to Auth Lab",
+          url
+        });
+      }
+    }),
+    emailOTP({
+      expiresIn: EMAIL_OTP_EXPIRES_IN_SECONDS,
+      otpLength: EMAIL_OTP_LENGTH,
+      allowedAttempts: EMAIL_OTP_ALLOWED_ATTEMPTS,
+      storeOTP: "hashed",
+      resendStrategy: "rotate",
+      rateLimit: { window: 60, max: EMAIL_OTP_REQUESTS_PER_MINUTE },
+      async sendVerificationOTP({ email, otp, type }, ctx) {
+        const flowId = ctx?.headers?.get("x-auth-flow-id");
+        const visitorId = ctx?.headers
+          ? getVisitorIdFromHeaders(ctx.headers)
+          : null;
+        if (flowId && visitorId) {
+          await appendOwnedEvent(flowId, visitorId, {
+            actor: "email",
+            action: "email-otp.queued",
+            description:
+              "The application queued a six-digit, five-minute email code in Mailpit.",
+            outcome: "success",
+            metadata: { email, endpoint: "/sign-in/email-otp" }
+          });
+        }
+        await sendAuthCodeEmail({
+          to: email,
+          subject:
+            type === "sign-in"
+              ? "Your Auth Lab email sign-in code"
+              : "Your Auth Lab verification code",
+          heading: "Your email code",
+          message:
+            "This manually entered code expires in five minutes, rotates when resent, and remains phishable.",
+          code: otp
+        });
+      }
+    }),
+    twoFactor({
+      issuer: "Auth Lab",
+      totpOptions: { digits: TOTP_DIGITS, period: TOTP_PERIOD_SECONDS },
+      backupCodeOptions: {
+        amount: 8,
+        length: 10,
+        storeBackupCodes: "encrypted"
+      },
+      accountLockout: {
+        enabled: true,
+        maxFailedAttempts: TOTP_ACCOUNT_FAILURE_LIMIT,
+        durationSeconds: TOTP_LOCK_SECONDS
+      }
+    }),
+    authRecorderPlugin(),
+    nextCookies()
+  ]
 });
 
 export type Session = typeof auth.$Infer.Session;

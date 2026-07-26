@@ -1203,7 +1203,8 @@ code,
   font: 11px/1 "SFMono-Regular", Consolas, monospace;
 }
 
-.field input {
+.field input,
+.field select {
   width: 100%;
   padding: 12px 13px;
   color: var(--text);
@@ -1214,7 +1215,9 @@ code,
 }
 
 .field input:hover,
-.field input:focus {
+.field input:focus,
+.field select:hover,
+.field select:focus {
   border-color: var(--line-bright);
 }
 

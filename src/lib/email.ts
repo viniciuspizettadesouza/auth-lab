@@ -36,3 +36,29 @@ export async function sendAuthEmail(input: SendAuthEmailInput) {
     `
   });
 }
+
+export async function sendAuthCodeEmail(input: {
+  to: string;
+  subject: string;
+  heading: string;
+  message: string;
+  code: string;
+}) {
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM ?? "Auth Lab <auth@auth-lab.local>",
+    to: input.to,
+    subject: input.subject,
+    text: `${input.heading}\n\n${input.message}\n\nCode: ${input.code}`,
+    html: `
+      <div style="background:#08110f;padding:40px;font-family:ui-monospace,monospace;color:#d9e7e1">
+        <div style="max-width:560px;margin:auto;border:1px solid #29443c;border-radius:16px;padding:32px;background:#0d1714">
+          <p style="color:#70f5b0;text-transform:uppercase;letter-spacing:.16em;font-size:12px">Auth Lab · local sandbox</p>
+          <h1 style="font:600 24px ui-sans-serif,sans-serif;color:#f2faf6">${input.heading}</h1>
+          <p style="line-height:1.7;color:#a9bbb4">${input.message}</p>
+          <p style="font-size:32px;letter-spacing:.3em;color:#70f5b0;font-weight:700">${input.code}</p>
+          <p style="margin-top:24px;font-size:12px;color:#698078">Never share this code with another person or enter it on a different origin.</p>
+        </div>
+      </div>
+    `
+  });
+}

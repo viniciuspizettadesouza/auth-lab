@@ -4,6 +4,7 @@ export * from "@/db/schema/recorder";
 import {
   account,
   session,
+  twoFactor,
   user,
   verification
 } from "@/db/schema/auth";
@@ -17,6 +18,7 @@ export const schema = {
   session,
   account,
   verification,
+  twoFactor,
   authenticationFlow,
   authenticationEvent
 };

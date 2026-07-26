@@ -55,6 +55,7 @@ export type MethodAdapter<
   TOperation extends string = string
 > = {
   metadata: AuthenticationMethod;
+  route: string;
   panels: readonly MethodPanelDefinition[];
   recorder: {
     journeys: readonly TJourney[];
@@ -66,6 +67,7 @@ export type MethodAdapter<
           method: "GET" | "POST" | "DELETE";
           success: string;
           failure: string;
+          completesFlow?: boolean;
         }
       >
     >;
