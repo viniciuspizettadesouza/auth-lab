@@ -5,7 +5,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 
 import { db } from "@/db";
-import { schema } from "@/db/schema";
+import { authSchema } from "@/db/schema";
 import { authRecorderPlugin } from "@/lib/auth-recorder-plugin";
 import { sendAuthEmail } from "@/lib/email";
 import {
@@ -31,7 +31,7 @@ export const auth = betterAuth({
     "development-only-auth-lab-secret-change-me",
   database: drizzleAdapter(db, {
     provider: "pg",
-    schema,
+    schema: authSchema,
     usePlural: true
   }),
   emailAndPassword: {

@@ -41,7 +41,7 @@ services:
       POSTGRES_USER: authlab
       POSTGRES_PASSWORD: authlab
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${AUTH_LAB_POSTGRES_PORT:-5433}:5432"
     volumes:
       - auth_lab_postgres:/var/lib/postgresql/data
     healthcheck:

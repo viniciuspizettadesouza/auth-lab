@@ -33,7 +33,7 @@ Then open:
 
 - Auth Lab: <http://localhost:3000>
 - Mailpit inbox: <http://localhost:8025>
-- PostgreSQL: `localhost:5432` (database/user/password: `authlab`)
+- PostgreSQL: `localhost:5433` (database/user/password: `authlab`)
 
 The app container waits for PostgreSQL, applies committed Drizzle migrations,
 and then starts Next.js.
@@ -89,7 +89,7 @@ Recorder integration tests run when an isolated, already-migrated PostgreSQL
 database is provided:
 
 ```bash
-TEST_DATABASE_URL=postgresql://authlab:authlab@localhost:5432/authlab npm run test:run
+TEST_DATABASE_URL=postgresql://authlab:authlab@localhost:5433/authlab npm run test:run
 ```
 
 For browser tests, start the Compose environment first:

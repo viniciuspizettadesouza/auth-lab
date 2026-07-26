@@ -200,5 +200,12 @@ export const schema = {
   authenticationEvent
 };
 
+export const authSchema = {
+  users: user,
+  sessions: session,
+  accounts: account,
+  verifications: verification
+};
+
 export type AuthenticationFlow = typeof authenticationFlow.$inferSelect;
 export type AuthenticationEvent = typeof authenticationEvent.$inferSelect;
