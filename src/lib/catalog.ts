@@ -1,64 +1,21 @@
-export type MethodStatus = "interactive" | "simulation" | "coming-later";
-export type RecommendationClassification =
-  | "historical"
-  | "transitional"
-  | "recommended"
-  | "high-assurance"
-  | "emerging";
-export type LearningTrack =
-  | "Human authentication & MFA"
-  | "Federation & delegated authorization"
-  | "Sessions & tokens"
-  | "Special environments"
-  | "Machine & workload identity";
-export type MethodCategory =
-  | "Authentication"
-  | "Passwordless"
-  | "MFA"
-  | "Federation"
-  | "Sessions"
-  | "Special environments"
-  | "Machine authentication";
-export type SecurityRating =
-  | "low"
-  | "medium"
-  | "high"
-  | "depends"
-  | "not-applicable";
-export type TierGrade = "S" | "A" | "B" | "C" | "D";
+import type {
+  AuthenticationMethod,
+  LearningTrack,
+  MethodStatus,
+  RecommendationClassification,
+  TierGrade
+} from "@/contracts";
+import { interactiveMethodAdapters } from "@/features/method-registry";
 
-export type AuthenticationMethod = {
-  slug: string;
-  name: string;
-  shortName: string;
-  category: MethodCategory;
-  track: LearningTrack;
-  classification: RecommendationClassification;
-  status: MethodStatus;
-  summary: string;
-  protocol: string;
-  evolution: {
-    then: string;
-    now: string;
-    next: string;
-  };
-  evidenceDate: string;
-  evidence: readonly {
-    label: string;
-    url: string;
-  }[];
-  tier: {
-    track: LearningTrack;
-    grade: TierGrade;
-    rationale: string;
-  };
-  ratings: {
-    setup: SecurityRating;
-    phishingResistance: SecurityRating;
-    replayResistance: SecurityRating;
-    recovery: SecurityRating;
-  };
-};
+export type {
+  AuthenticationMethod,
+  LearningTrack,
+  MethodCategory,
+  MethodStatus,
+  RecommendationClassification,
+  SecurityRating,
+  TierGrade
+} from "@/contracts";
 
 const nistAuthenticators =
   "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/";
@@ -158,36 +115,7 @@ export const authenticationMethods: AuthenticationMethod[] = [
       recovery: "low"
     }
   },
-  {
-    slug: "password",
-    name: "Email and password",
-    shortName: "Password",
-    category: "Authentication",
-    track: "Human authentication & MFA",
-    classification: "transitional",
-    status: "interactive",
-    summary: "A shared secret verified by the application and bound to a session.",
-    protocol: "Application-specific",
-    evolution: {
-      then: "Passwords made remote authentication cheap and universally deployable.",
-      now: "They remain compatible and recoverable, but require blocklists, throttling, safe hashing, and password-manager support.",
-      next: "Offer passkeys where the ecosystem and recovery design can support them."
-    },
-    evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.1", url: nistAuthenticators }],
-    tier: {
-      track: "Human authentication & MFA",
-      grade: "D",
-      rationale:
-        "A shared secret alone is replayable and vulnerable to phishing."
-    },
-    ratings: {
-      setup: "high",
-      phishingResistance: "low",
-      replayResistance: "medium",
-      recovery: "high"
-    }
-  },
+  ...interactiveMethodAdapters.map((adapter) => adapter.metadata),
   {
     slug: "magic-link",
     name: "Magic link",

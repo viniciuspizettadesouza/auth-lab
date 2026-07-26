@@ -21,6 +21,12 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
   safe historical exhibits, and `Then / Now / Next` evidence
 - Complete contextual comparison and track-specific 2026 tier lists covering
   every catalog method
+- Feature adapters and shared method, flow, event, session, evidence, and
+  classification contracts for adding methods without coupling them to the
+  password implementation
+- Five independently composed password panels coordinated by one controller
+  hook, with authentication, recorder, and session service boundaries
+- Separate Better Auth and educational-recorder database schemas
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -109,16 +115,30 @@ their default local ports.
 
 ## Architecture
 
-- `src/lib/catalog.ts` is the typed source of truth for method metadata,
+- `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
   classification, learning track, evolution narrative, evidence, comparison
-  ratings, tier grade, and rationale. The map, comparison, and tier views consume
-  the same collection.
-- `src/lib/auth.ts` configures Better Auth, email delivery, session policy, and
-  database hooks, prospective-password screening, and endpoint rate limits.
-- `src/lib/credentials.ts` owns the NIST-aligned length boundary and the
-  auditable local password blocklist. A production deployment should replace
-  the demonstrative corpus with a substantially larger, maintained source and
-  distributed, account-aware abuse controls.
+  ratings, tier grade, and rationale. Interactive entries come from registered
+  feature adapters; the map, comparison, and tier views consume the same
+  collection.
+- `src/features/method-registry.ts` registers interactive method adapters.
+  `src/features/password/adapter.ts` owns password metadata, panel definitions,
+  recorder journeys, and safe client-event templates.
+- `src/contracts` contains the method-independent contracts consumed by product
+  features, persistence, panels, and tests.
+- `src/features/password/components` contains the five password lab panels and
+  flow history; `use-password-lab-controller.ts` owns their shared behavior.
+- `src/services` contains authentication, recorder, and session server
+  boundaries. Compatibility exports in `src/lib` preserve existing imports.
+- `src/db/schema/auth.ts` and `src/db/schema/recorder.ts` keep authentication
+  library persistence separate from educational flow persistence while
+  retaining the committed database schema.
+- `src/services/auth/service.ts` configures Better Auth, email delivery, session
+  policy, database hooks, prospective-password screening, and endpoint rate
+  limits.
+- `src/features/password/server/credentials.ts` owns the NIST-aligned length
+  boundary and the auditable local password blocklist. A production deployment
+  should replace the demonstrative corpus with a substantially larger,
+  maintained source and distributed, account-aware abuse controls.
 - `src/lib/recorder.ts` owns ordered event persistence and ownership checks.
 - `src/lib/safe-metadata.ts` is the recorder's strict metadata boundary.
 - `src/app/api/lab` exposes owned flow history and token-free session summaries.

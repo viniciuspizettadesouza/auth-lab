@@ -99,7 +99,12 @@ online-guessing defenses are documented in the [README](../README.md).
 
 ### Milestone 2 — Scalable feature structure
 
-**Status:** Next
+**Status:** Complete
+
+Completed on 2026-07-26. Feature adapters, shared contracts, five composed
+password panels with a controller hook, separated persistence schemas, and
+authentication/recorder/session service boundaries are documented in the
+[README](../README.md).
 
 **Estimate:** 1–2 days
 

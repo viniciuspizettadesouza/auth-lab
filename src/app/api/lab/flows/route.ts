@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
+import { defaultMethod } from "@/features/method-registry";
 import { auth } from "@/lib/auth";
-import { clearOwnedFlows, listOwnedFlows, startFlow } from "@/lib/recorder";
+import {
+  clearOwnedFlows,
+  listOwnedFlows,
+  startFlow
+} from "@/services/recorder/service";
 import {
   createVisitorId,
   getVisitorIdFromHeaders,
   setVisitorCookie
 } from "@/lib/visitor";
-
-const startFlowSchema = z.object({
-  journey: z.enum(["sign-up", "sign-in", "password-reset", "session"])
-});
 
 async function currentUserId(headers: Headers) {
   const session = await auth.api.getSession({ headers });
@@ -30,7 +30,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const parsed = startFlowSchema.safeParse(await request.json());
+  const parsed = defaultMethod.journeySchema.safeParse(
+    (await request.json() as { journey?: unknown }).journey
+  );
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid authentication journey." },
@@ -40,7 +42,11 @@ export async function POST(request: NextRequest) {
 
   const existingVisitorId = getVisitorIdFromHeaders(request.headers);
   const visitorId = existingVisitorId ?? createVisitorId();
-  const flow = await startFlow(visitorId, parsed.data.journey);
+  const flow = await startFlow(
+    visitorId,
+    parsed.data,
+    defaultMethod.adapter.metadata.slug
+  );
   const response = NextResponse.json({ flow }, { status: 201 });
   if (!existingVisitorId) setVisitorCookie(response, visitorId);
   return response;

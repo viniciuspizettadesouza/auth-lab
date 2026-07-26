@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { passwordMethodAdapter } from "@/features/password/adapter";
+
 const hasDatabase = Boolean(process.env.TEST_DATABASE_URL);
 
 describe.skipIf(!hasDatabase)("recorder integration", () => {
@@ -21,7 +23,11 @@ describe.skipIf(!hasDatabase)("recorder integration", () => {
   });
 
   it("orders events atomically and enforces visitor ownership", async () => {
-    const flow = await recorder.startFlow(visitorA, "sign-in");
+    const flow = await recorder.startFlow(
+      visitorA,
+      "sign-in",
+      passwordMethodAdapter.metadata.slug
+    );
     await Promise.all([
       recorder.appendOwnedEvent(flow.id, visitorA, {
         actor: "browser",

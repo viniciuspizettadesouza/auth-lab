@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import {
   deleteOwnedFlow,
   getOwnedFlowWithEvents
-} from "@/lib/recorder";
+} from "@/services/recorder/service";
 import { getVisitorIdFromHeaders } from "@/lib/visitor";
 
 type Context = { params: Promise<{ id: string }> };
