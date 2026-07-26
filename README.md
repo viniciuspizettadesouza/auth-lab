@@ -1,8 +1,8 @@
 # Auth Lab
 
 This README documents the current implementation, local operation, and test
-commands. For the product rationale, conceptual model, and future roadmap, read
-the [product vision](docs/product-vision.md).
+commands. Read the [product vision](docs/product-vision.md) for the rationale and
+conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
 
 ## What is implemented
 
@@ -15,7 +15,7 @@ the [product vision](docs/product-vision.md).
 - Mailpit verification and reset emails
 - Visitor/user-owned authentication flow history
 - Ordered flow diagram and sanitized network inspector
-- Educational catalog and contextual method comparison
+- Educational catalog, contextual comparison, and a scenario-bound 2026 tier list
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   authenticationMethods,
   comparisonMethods,
+  consumerWebTierList,
   methodCategories
 } from "@/lib/catalog";
 
@@ -34,6 +35,25 @@ describe("authentication method catalog", () => {
       "totp",
       "passkey",
       "oidc"
+    ]);
+  });
+
+  it("assigns each human web reference method to one contextual tier", () => {
+    const tieredSlugs = consumerWebTierList.flatMap(
+      (tier) => tier.methodSlugs
+    );
+    const catalogSlugs = new Set(
+      authenticationMethods.map((method) => method.slug)
+    );
+
+    expect(new Set(tieredSlugs).size).toBe(tieredSlugs.length);
+    expect(tieredSlugs.every((slug) => catalogSlugs.has(slug))).toBe(true);
+    expect(consumerWebTierList.map((tier) => tier.grade)).toEqual([
+      "S",
+      "A",
+      "B",
+      "C",
+      "D"
     ]);
   });
 });

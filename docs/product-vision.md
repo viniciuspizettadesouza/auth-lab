@@ -42,37 +42,10 @@ Every interactive method should eventually provide the same five views:
 5. **Comparison** — contextual trade-offs against other methods rather than
    universal scores.
 
-## Method roadmap
+## Delivery
 
-The intended collection includes:
-
-- Traditional credentials: email/password, username/password, and the historical
-  limitations of PINs and security questions.
-- Passwordless: magic links, email/SMS codes, one-time tokens, and passkeys.
-- MFA: TOTP, OTP, push approval, security keys, and recovery codes.
-- Federation: Google, Microsoft, Apple, GitHub, modern OpenID Connect SSO, and
-  SAML enterprise SSO.
-- Constrained and enterprise environments: device authorization, QR login,
-  smartcards, client certificates, mTLS, LDAP/Active Directory, and digital
-  identity.
-- Machine authentication: API keys, personal access tokens, service accounts,
-  OAuth client credentials, signed JWTs, shared secrets, certificates, and
-  workload identity.
-
-Account linking is a cross-cutting future capability. A local user should be able
-to own multiple credential, social, passkey, and enterprise identities while the
-laboratory explains linking conflicts and method removal.
-
-## Attack simulator
-
-A future local-only Attack Simulator may demonstrate why protections exist,
-including reused credentials, captured OTPs, session fixation, expired or
-replayed tokens, missing OAuth `state`, invalid redirect URIs, and session
-revocation.
-
-It must explain defenses without becoming an operational attack toolkit. All
-scenarios should use synthetic local identities, controlled services, and
-sanitized events.
+The ordered method collection, architectural preparation, completion criteria,
+and Attack Simulator scope are maintained in the [roadmap](roadmap.md).
 
 ## Product principles
 

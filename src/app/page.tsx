@@ -2,6 +2,7 @@ import { Braces, Database, Eye, ShieldCheck } from "lucide-react";
 
 import { ComparisonTable } from "@/components/comparison-table";
 import { MethodCatalog } from "@/components/method-catalog";
+import { TierList } from "@/components/tier-list";
 
 export default function HomePage() {
   return (
@@ -66,6 +67,18 @@ export default function HomePage() {
             </p>
           </div>
           <ComparisonTable />
+
+          <div className="tier-heading">
+            <div>
+              <p className="eyebrow">2026 tier list</p>
+              <h2>A snapshot with a declared context.</h2>
+            </div>
+            <p>
+              Use the tier as a starting opinion, then use the comparison above
+              to challenge it against your actual architecture.
+            </p>
+          </div>
+          <TierList />
         </div>
       </section>
 

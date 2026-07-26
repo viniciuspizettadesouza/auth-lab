@@ -9,6 +9,7 @@ export type MethodCategory =
   | "Machine authentication";
 
 export type SecurityRating = "low" | "medium" | "high" | "depends";
+export type TierGrade = "S" | "A" | "B" | "C" | "D";
 
 export type AuthenticationMethod = {
   slug: string;
@@ -237,3 +238,46 @@ export const methodCategories = [
 export const comparisonMethods = authenticationMethods.filter((method) =>
   ["password", "magic-link", "totp", "passkey", "oidc"].includes(method.slug)
 );
+
+export const consumerWebTierList = [
+  {
+    grade: "S",
+    label: "Preferred default",
+    methodSlugs: ["passkey"],
+    rationale:
+      "Phishing-resistant, replay-resistant public-key authentication with no shared verifier secret."
+  },
+  {
+    grade: "A",
+    label: "Strong delegated identity",
+    methodSlugs: ["oidc"],
+    rationale:
+      "Can centralize strong authentication and recovery, but the result inherits the identity provider's controls."
+  },
+  {
+    grade: "B",
+    label: "Useful additional layer",
+    methodSlugs: ["totp"],
+    rationale:
+      "Widely deployable as a second factor, although manually entered codes remain phishable."
+  },
+  {
+    grade: "C",
+    label: "Transitional convenience",
+    methodSlugs: ["magic-link", "email-otp"],
+    rationale:
+      "Removes a local password but moves trust and recovery to a phishable email channel."
+  },
+  {
+    grade: "D",
+    label: "Legacy baseline",
+    methodSlugs: ["password"],
+    rationale:
+      "Still necessary in many systems, but a shared secret alone is replayable and vulnerable to phishing."
+  }
+] as const satisfies readonly {
+  grade: TierGrade;
+  label: string;
+  methodSlugs: readonly string[];
+  rationale: string;
+}[];
