@@ -3,10 +3,13 @@ export * from "@/db/schema/recorder";
 
 import {
   account,
+  passkey,
+  passkeyKind,
   session,
   twoFactor,
   user,
-  verification
+  verification,
+  webauthnChallenge
 } from "@/db/schema/auth";
 import {
   authenticationEvent,
@@ -17,8 +20,11 @@ export const schema = {
   user,
   session,
   account,
+  passkey,
+  passkeyKind,
   verification,
   twoFactor,
+  webauthnChallenge,
   authenticationFlow,
   authenticationEvent
 };

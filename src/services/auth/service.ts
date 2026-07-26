@@ -1,6 +1,7 @@
 import "server-only";
 
 import { betterAuth } from "better-auth";
+import { passkey } from "@better-auth/passkey";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
@@ -8,7 +9,7 @@ import { emailOTP, magicLink, twoFactor } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { authSchema, user } from "@/db/schema";
+import { authSchema, passkeyKind, user } from "@/db/schema";
 import { authRecorderPlugin } from "@/features/password/server/auth-recorder-plugin";
 import {
   EMAIL_OTP_ALLOWED_ATTEMPTS,
@@ -28,6 +29,7 @@ import {
   MIN_PASSWORD_LENGTH,
   passwordRejectionReason
 } from "@/features/password/server/credentials";
+import { webauthnRelyingParty } from "@/features/passkey/server/config";
 import {
   appendOwnedEvent,
   attachFlowToUser,
@@ -42,6 +44,8 @@ function requestContext(request?: Request | null) {
     : null;
   return { flowId, visitorId };
 }
+
+const relyingParty = webauthnRelyingParty();
 
 const prospectivePasswordPaths = new Set([
   "/sign-up/email",
@@ -269,6 +273,54 @@ export const auth = betterAuth({
     }
   },
   plugins: [
+    passkey({
+      rpName: "Auth Lab",
+      rpID: relyingParty.rpID,
+      origin: relyingParty.origin,
+      authenticatorSelection: {
+        residentKey: "required",
+        requireResidentKey: true,
+        userVerification: "required"
+      },
+      registration: {
+        async afterVerification({
+          verification,
+          clientData,
+          context,
+          user: registrationUser
+        }) {
+          if (!verification.registrationInfo?.userVerified) {
+            throw APIError.from("BAD_REQUEST", {
+              code: "USER_VERIFICATION_REQUIRED",
+              message: "Local user verification is required."
+            });
+          }
+          const kind =
+            context === "security-key" ? "security-key" : "passkey";
+          await db
+            .insert(passkeyKind)
+            .values({
+              credentialID: clientData.id,
+              userId: registrationUser.id,
+              kind
+            })
+            .onConflictDoUpdate({
+              target: passkeyKind.credentialID,
+              set: { userId: registrationUser.id, kind }
+            });
+        }
+      },
+      authentication: {
+        afterVerification({ verification }) {
+          if (!verification.authenticationInfo.userVerified) {
+            throw APIError.from("UNAUTHORIZED", {
+              code: "USER_VERIFICATION_REQUIRED",
+              message: "Local user verification is required."
+            });
+          }
+        }
+      }
+    }),
     magicLink({
       expiresIn: MAGIC_LINK_EXPIRES_IN_SECONDS,
       storeToken: "hashed",

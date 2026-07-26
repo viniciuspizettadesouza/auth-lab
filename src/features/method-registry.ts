@@ -4,10 +4,12 @@ import {
   passwordMethodAdapter
 } from "@/features/password/adapter";
 import { milestone3Adapters } from "@/features/link-code/adapters";
+import { passkeyAdapter } from "@/features/passkey/adapter";
 
 export const interactiveMethodAdapters = [
   passwordMethodAdapter,
-  ...milestone3Adapters
+  ...milestone3Adapters,
+  passkeyAdapter
 ] as const;
 
 export const defaultMethod = {

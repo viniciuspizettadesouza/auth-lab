@@ -116,10 +116,66 @@ export const twoFactor = pgTable(
   ]
 );
 
+export const passkey = pgTable(
+  "passkeys",
+  {
+    id: text("id").primaryKey(),
+    name: text("name"),
+    publicKey: text("public_key").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    credentialID: text("credential_id").notNull(),
+    counter: integer("counter").notNull(),
+    deviceType: text("device_type").notNull(),
+    backedUp: boolean("backed_up").notNull(),
+    transports: text("transports"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    aaguid: text("aaguid")
+  },
+  (table) => [
+    uniqueIndex("passkeys_credential_id_idx").on(table.credentialID),
+    index("passkeys_user_id_idx").on(table.userId)
+  ]
+);
+
+export const passkeyKind = pgTable(
+  "passkey_kinds",
+  {
+    credentialID: text("credential_id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    kind: text("kind").$type<"passkey" | "security-key">().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [index("passkey_kinds_user_id_idx").on(table.userId)]
+);
+
+export const webauthnChallenge = pgTable(
+  "webauthn_challenges",
+  {
+    id: text("id").primaryKey(),
+    challenge: text("challenge").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    purpose: text("purpose").$type<"security-key-step-up">().notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [
+    index("webauthn_challenges_user_id_idx").on(table.userId),
+    index("webauthn_challenges_expires_at_idx").on(table.expiresAt)
+  ]
+);
+
 export const authSchema = {
   users: user,
   sessions: session,
   accounts: account,
   verifications: verification,
-  twoFactors: twoFactor
+  twoFactors: twoFactor,
+  passkeys: passkey
 };

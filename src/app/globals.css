@@ -1513,6 +1513,18 @@ code,
   background: rgba(11,22,19,.9);
 }
 
+.lab-sidebar {
+  position: sticky;
+  top: 86px;
+  align-self: start;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(11,22,19,.9);
+}
+
 .history-header {
   display: flex;
   align-items: center;

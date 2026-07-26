@@ -34,6 +34,13 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
   replay defense, account lockout, encrypted recovery codes, and removal
 - A clearly labelled local SMS OTP simulation covering interception,
   number-recycling, expiry, attempts, consumption, replay, delivery, and cost
+- WebAuthn registration and discoverable passkey authentication with platform
+  and roaming authenticators, mandatory local user verification, exact origin
+  and relying-party binding, five-minute single-use challenges, and public-key
+  storage
+- Authenticated passkey linking, credential inventory and revocation, explicit
+  synced versus device-bound recovery guidance, downgrade-resistant failures,
+  and roaming security-key step-up that does not create another session
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -141,9 +148,12 @@ their default local ports.
   retaining the committed database schema.
 - `src/features/link-code` contains the Milestone 3 adapters, real link/code
   labs, TOTP ceremony, SMS simulator, and replay-defense boundaries.
-- `drizzle/0001_clever_sabra.sql` adds only the TOTP enrollment table and the
-  Better Auth user flag; magic-link and email-OTP proofs reuse the verification
-  store.
+- `src/features/passkey` contains the passkey adapter, real WebAuthn lab,
+  relying-party policy, and session-bound security-key step-up ceremony.
+- `drizzle/0003_easy_gressill.sql` adds public-key credential storage,
+  passkey/security-key assurance labels, and atomically consumable WebAuthn
+  step-up challenges. Magic-link, email-OTP, and ordinary passkey challenges
+  reuse Better Auth's verification store.
 - `src/services/auth/service.ts` configures Better Auth, email delivery, session
   policy, database hooks, prospective-password screening, and endpoint rate
   limits.

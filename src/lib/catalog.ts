@@ -117,38 +117,6 @@ export const authenticationMethods: AuthenticationMethod[] = [
   },
   ...interactiveMethodAdapters.map((adapter) => adapter.metadata),
   {
-    slug: "passkey",
-    name: "Passkey",
-    shortName: "Passkey",
-    category: "Passwordless",
-    track: "Human authentication & MFA",
-    classification: "recommended",
-    status: "coming-later",
-    summary: "A domain-bound public-key credential unlocked by the device.",
-    protocol: "WebAuthn / FIDO2",
-    evolution: {
-      then: "Security keys proved that origin-bound public-key authentication could stop credential phishing.",
-      now: "Passkeys make the same model broadly usable through platform and synced credentials.",
-      next: "Design bootstrap, device loss, shared-device use, and recovery as carefully as authentication."
-    },
-    evidenceDate,
-    evidence: [
-      { label: "W3C WebAuthn Level 3", url: "https://www.w3.org/TR/webauthn-3/" }
-    ],
-    tier: {
-      track: "Human authentication & MFA",
-      grade: "S",
-      rationale:
-        "A phishing-resistant public-key default when enrollment and recovery are designed well."
-    },
-    ratings: {
-      setup: "medium",
-      phishingResistance: "high",
-      replayResistance: "high",
-      recovery: "depends"
-    }
-  },
-  {
     slug: "saml",
     name: "Enterprise SSO",
     shortName: "SAML",

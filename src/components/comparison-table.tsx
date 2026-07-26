@@ -19,7 +19,10 @@ function Rating({
   );
 }
 
-export function ComparisonTable() {
+export function ComparisonTable({ slugs }: { slugs?: readonly string[] } = {}) {
+  const methods = slugs
+    ? comparisonMethods.filter((method) => slugs.includes(method.slug))
+    : comparisonMethods;
   return (
     <div className="comparison-wrap">
       <table className="comparison-table">
@@ -33,7 +36,7 @@ export function ComparisonTable() {
           </tr>
         </thead>
         <tbody>
-          {comparisonMethods.map((method) => (
+          {methods.map((method) => (
             <tr key={method.slug}>
               <td>
                 <strong className="comparison-method">{method.shortName}</strong>

@@ -148,7 +148,13 @@ Build the transitional passwordless and possession-factor chapter:
 
 ### Milestone 4 — Passkeys and phishing-resistant authentication
 
-**Status:** Planned
+**Status:** Complete
+
+Completed on 2026-07-26. Discoverable platform and roaming credentials,
+mandatory user verification, exact origin and relying-party binding, public-key
+storage, authenticated linking and revocation, recovery trade-offs,
+downgrade-resistant failure handling, and roaming security-key step-up are
+documented in the [README](../README.md).
 
 **Estimate:** 3–5 days
 
