@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { MethodAdapter } from "@/contracts";
+import { citeEvidence } from "@/lib/evidence";
 
 const panels = [
   { id: "user-experience", title: "User experience", note: "Real or labelled simulation" },
@@ -10,8 +11,6 @@ const panels = [
   { id: "comparison", title: "Comparison", note: "Contextual" }
 ] as const;
 
-const nist =
-  "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/";
 const evidenceDate = "2026-07-26";
 
 export const magicLinkAdapter = {
@@ -31,7 +30,20 @@ export const magicLinkAdapter = {
       next: "Use origin-bound public-key credentials when phishing resistance is required."
     },
     evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.3", url: nist }],
+    evidence: [
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.3 Out-of-Band Devices",
+        supports: [
+          "out-of-band-limitations",
+          "phishing-resistance",
+          "replay-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#out-of-band-devices"
+      }),
+      citeEvidence("owasp-forgot-password", {
+        supports: ["implementation-guidance", "recovery"]
+      })
+    ],
     tier: {
       track: "Human authentication & MFA",
       grade: "C",
@@ -76,7 +88,20 @@ export const emailOtpAdapter = {
       next: "Reserve email for address confirmation and recovery; use stronger authenticators for sign-in."
     },
     evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.3", url: nist }],
+    evidence: [
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.3 Out-of-Band Devices",
+        supports: [
+          "out-of-band-limitations",
+          "phishing-resistance",
+          "replay-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#out-of-band-devices"
+      }),
+      citeEvidence("owasp-forgot-password", {
+        supports: ["implementation-guidance", "recovery"]
+      })
+    ],
     tier: {
       track: "Human authentication & MFA",
       grade: "C",
@@ -132,8 +157,18 @@ export const totpAdapter = {
     },
     evidenceDate,
     evidence: [
-      { label: "RFC 6238", url: "https://www.rfc-editor.org/rfc/rfc6238" },
-      { label: "NIST SP 800-63B §3.1.4", url: nist }
+      citeEvidence("rfc-6238", {
+        supports: ["protocol-definition"]
+      }),
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.4 Single-Factor OTP",
+        supports: [
+          "authenticator-requirements",
+          "phishing-resistance",
+          "replay-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#single-factor-otp"
+      })
     ],
     tier: {
       track: "Human authentication & MFA",
@@ -208,7 +243,17 @@ export const smsOtpAdapter = {
       next: "Use TOTP as a transitional factor or an origin-bound authenticator where possible."
     },
     evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.3.3", url: nist }],
+    evidence: [
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.3.3 PSTN Use",
+        supports: [
+          "assessment-context",
+          "out-of-band-limitations",
+          "phishing-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#pstn-use"
+      })
+    ],
     tier: {
       track: "Human authentication & MFA",
       grade: "C",

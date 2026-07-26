@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 
+import { EvidenceLinks } from "@/components/evidence-links";
 import { PasswordLab } from "@/components/password-lab";
 import { authenticationMethods, classificationDetails } from "@/lib/catalog";
 
@@ -60,19 +60,10 @@ export default function PasswordMethodPage() {
             <dd>{method.evolution.next}</dd>
           </div>
         </dl>
-        <div className="method-evidence">
-          <span>Evidence reviewed {method.evidenceDate}</span>
-          {method.evidence.map((evidence) => (
-            <a
-              href={evidence.url}
-              key={evidence.url}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {evidence.label} <ExternalLink aria-hidden="true" size={12} />
-            </a>
-          ))}
-        </div>
+        <EvidenceLinks
+          evidence={method.evidence}
+          reviewedAt={method.evidenceDate}
+        />
       </section>
       <div className="shell">
         <Suspense fallback={<div className="empty-state">Loading laboratory…</div>}>

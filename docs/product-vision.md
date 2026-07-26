@@ -59,3 +59,6 @@ and Attack Simulator scope are maintained in the [roadmap](roadmap.md).
 - Each new method must be complete enough to compare, inspect, recover, and test.
 - Features grow as complete vertical slices rather than partially implemented
   integrations.
+- External evidence follows the [reference policy](references.md): publication
+  status and supported claims remain explicit, and project judgments are not
+  attributed to standards bodies.

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { MethodAdapter } from "@/contracts";
+import { citeEvidence } from "@/lib/evidence";
 
 export const passwordJourneys = [
   "sign-up",
@@ -40,10 +41,16 @@ export const passwordMethodAdapter = {
     },
     evidenceDate: "2026-07-26",
     evidence: [
-      {
-        label: "NIST SP 800-63B §3.1.1",
-        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/"
-      }
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.1 Passwords",
+        supports: [
+          "authenticator-requirements",
+          "password-policy",
+          "phishing-resistance",
+          "replay-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#passwords"
+      })
     ],
     tier: {
       track: "Human authentication & MFA",
@@ -53,7 +60,7 @@ export const passwordMethodAdapter = {
     ratings: {
       setup: "high",
       phishingResistance: "low",
-      replayResistance: "medium",
+      replayResistance: "low",
       recovery: "high"
     }
   },

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
+import { EvidenceLinks } from "@/components/evidence-links";
 import {
   authenticationMethods,
   classificationDetails,
@@ -123,21 +124,11 @@ export function MethodCatalog() {
                               <dd>{method.evolution.next}</dd>
                             </div>
                           </dl>
-                          <div className="evidence-links">
-                            <span>Evidence · {method.evidenceDate}</span>
-                            {method.evidence.map((evidence) => (
-                              <a
-                                href={evidence.url}
-                                key={evidence.url}
-                                onClick={(event) => event.stopPropagation()}
-                                rel="noreferrer"
-                                target="_blank"
-                              >
-                                {evidence.label}
-                                <ExternalLink aria-hidden="true" size={11} />
-                              </a>
-                            ))}
-                          </div>
+                          <EvidenceLinks
+                            className="evidence-links"
+                            evidence={method.evidence}
+                            reviewedAt={method.evidenceDate}
+                          />
                         </details>
                       </>
                     );

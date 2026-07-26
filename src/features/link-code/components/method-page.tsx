@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 
+import { EvidenceLinks } from "@/components/evidence-links";
 import type { AuthenticationMethod } from "@/contracts";
 import { classificationDetails } from "@/lib/catalog";
 
@@ -41,14 +41,10 @@ export function MethodPage({
           <div><dt>Now</dt><dd>{method.evolution.now}</dd></div>
           <div><dt>Next</dt><dd>{method.evolution.next}</dd></div>
         </dl>
-        <div className="method-evidence">
-          <span>Evidence reviewed {method.evidenceDate}</span>
-          {method.evidence.map((item) => (
-            <a href={item.url} key={item.url} rel="noreferrer" target="_blank">
-              {item.label} <ExternalLink aria-hidden="true" size={12} />
-            </a>
-          ))}
-        </div>
+        <EvidenceLinks
+          evidence={method.evidence}
+          reviewedAt={method.evidenceDate}
+        />
       </section>
       <div className="shell">{children}</div>
     </>

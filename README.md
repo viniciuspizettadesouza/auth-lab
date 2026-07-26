@@ -2,7 +2,9 @@
 
 This README documents the current implementation, local operation, and test
 commands. Read the [product vision](docs/product-vision.md) for the rationale and
-conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
+conceptual model, the [roadmap](docs/roadmap.md) for planned delivery, and the
+[evidence policy](docs/references.md) for how external standards support
+catalog claims.
 
 ## What is implemented
 
@@ -18,7 +20,8 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
 - Visitor/user-owned authentication flow history
 - Ordered flow diagram and sanitized network inspector
 - Evolution Map with track filters, contextual recommendation classifications,
-  safe historical exhibits, and `Then / Now / Next` evidence
+  safe historical exhibits, and typed `Then / Now / Next` evidence that exposes
+  publisher, publication status, relevant section, and review date
 - Complete contextual comparison and track-specific 2026 tier lists covering
   every catalog method
 - Feature adapters and shared method, flow, event, session, evidence, and

@@ -1,4 +1,5 @@
 import type { MethodAdapter } from "@/contracts";
+import { citeEvidence } from "@/lib/evidence";
 
 const panels = [
   { id: "user-experience", title: "User experience", note: "Real local redirect" },
@@ -29,12 +30,19 @@ export const oidcAdapter = {
     },
     evidenceDate,
     evidence: [
-      {
-        label: "OpenID Connect Core 1.0",
-        url: "https://openid.net/specs/openid-connect-core-1_0.html"
-      },
-      { label: "RFC 9700", url: "https://www.rfc-editor.org/rfc/rfc9700" },
-      { label: "RFC 7636", url: "https://www.rfc-editor.org/rfc/rfc7636" }
+      citeEvidence("oidf-oidc-core-1.0", {
+        supports: ["federation-security", "protocol-definition"]
+      }),
+      citeEvidence("rfc-9700", {
+        supports: ["federation-security", "threat-model"]
+      }),
+      citeEvidence("rfc-7636", {
+        supports: [
+          "federation-security",
+          "protocol-definition",
+          "replay-resistance"
+        ]
+      })
     ],
     tier: {
       track: "Federation & delegated authorization",
@@ -103,10 +111,13 @@ export const samlAdapter = {
     },
     evidenceDate,
     evidence: [
-      {
-        label: "OASIS SAML 2.0",
-        url: "https://docs.oasis-open.org/security/saml/v2.0/"
-      }
+      citeEvidence("oasis-saml-2.0", {
+        supports: [
+          "federation-security",
+          "protocol-definition",
+          "replay-resistance"
+        ]
+      })
     ],
     tier: {
       track: "Federation & delegated authorization",

@@ -1,4 +1,5 @@
 import type { MethodAdapter } from "@/contracts";
+import { citeEvidence } from "@/lib/evidence";
 
 const panels = [
   { id: "user-experience", title: "User experience", note: "Real WebAuthn ceremony" },
@@ -27,14 +28,30 @@ export const passkeyAdapter = {
     },
     evidenceDate: "2026-07-26",
     evidence: [
-      {
-        label: "W3C WebAuthn Level 3",
-        url: "https://www.w3.org/TR/webauthn-3/"
-      },
-      {
-        label: "NIST SP 800-63B §3.1.7",
-        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/"
-      }
+      citeEvidence("w3c-webauthn-2", {
+        supports: [
+          "phishing-resistance",
+          "protocol-definition",
+          "replay-resistance"
+        ]
+      }),
+      citeEvidence("w3c-webauthn-3", {
+        supports: ["protocol-definition"]
+      }),
+      citeEvidence("fido-ctap-2.3", {
+        supports: ["authenticator-requirements", "protocol-definition"]
+      }),
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.7 Cryptographic Authenticators",
+        supports: [
+          "assessment-context",
+          "authenticator-requirements",
+          "phishing-resistance",
+          "recovery",
+          "replay-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#single-factor-cryptographic-authentication"
+      })
     ],
     tier: {
       track: "Human authentication & MFA",

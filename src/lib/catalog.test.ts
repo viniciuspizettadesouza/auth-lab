@@ -8,6 +8,7 @@ import {
   tieredMethods,
   tierTracks
 } from "@/lib/catalog";
+import { evidenceSources } from "@/lib/evidence";
 
 describe("authentication method catalog", () => {
   it("has unique stable slugs and valid tracks", () => {
@@ -58,6 +59,29 @@ describe("authentication method catalog", () => {
           method.evidence.length > 0
       )
     ).toBe(true);
+
+    const sourceIds = new Set(Object.keys(evidenceSources));
+    expect(
+      authenticationMethods.every((method) =>
+        method.evidence.every(
+          (evidence) =>
+            sourceIds.has(evidence.id) &&
+            evidence.publisher &&
+            evidence.title &&
+            evidence.status &&
+            evidence.reviewedAt &&
+            evidence.supports.length > 0
+        )
+      )
+    ).toBe(true);
+  });
+
+  it("labels evolving WebAuthn and FIDO specifications without presenting them as final", () => {
+    expect(evidenceSources["w3c-webauthn-2"].status).toBe("recommendation");
+    expect(evidenceSources["w3c-webauthn-3"].status).toBe(
+      "candidate-recommendation"
+    );
+    expect(evidenceSources["fido-ctap-2.3"].status).toBe("proposed-standard");
   });
 
   it("keeps historical simulations non-interactive", () => {

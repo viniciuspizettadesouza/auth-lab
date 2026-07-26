@@ -6,6 +6,7 @@ import type {
   TierGrade
 } from "@/contracts";
 import { interactiveMethodAdapters } from "@/features/method-registry";
+import { citeEvidence } from "@/lib/evidence";
 
 export type {
   AuthenticationMethod,
@@ -17,8 +18,6 @@ export type {
   TierGrade
 } from "@/contracts";
 
-const nistAuthenticators =
-  "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/";
 const evidenceDate = "2026-07-26";
 
 export const authenticationMethods: AuthenticationMethod[] = [
@@ -39,7 +38,17 @@ export const authenticationMethods: AuthenticationMethod[] = [
       next: "Use bound authenticators and a deliberate recovery journey instead of personal trivia."
     },
     evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.1", url: nistAuthenticators }],
+    evidence: [
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.1 Passwords",
+        supports: [
+          "assessment-context",
+          "authenticator-requirements",
+          "phishing-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#passwords"
+      })
+    ],
     tier: {
       track: "Human authentication & MFA",
       grade: "D",
@@ -70,7 +79,17 @@ export const authenticationMethods: AuthenticationMethod[] = [
       next: "Use a local activation PIN for a cryptographic authenticator, with verifier-side throttling."
     },
     evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.1", url: nistAuthenticators }],
+    evidence: [
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.1 Passwords and §3.2.10 Activation Secrets",
+        supports: [
+          "assessment-context",
+          "authenticator-requirements",
+          "phishing-resistance"
+        ],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#activation-secrets"
+      })
+    ],
     tier: {
       track: "Human authentication & MFA",
       grade: "D",
@@ -101,7 +120,13 @@ export const authenticationMethods: AuthenticationMethod[] = [
       next: "Prefer length, compromised-password screening, password managers, and changes after compromise."
     },
     evidenceDate,
-    evidence: [{ label: "NIST SP 800-63B §3.1.1.2", url: nistAuthenticators }],
+    evidence: [
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§3.1.1.2 Password Verifiers",
+        supports: ["assessment-context", "password-policy"],
+        url: "https://pages.nist.gov/800-63-4/sp800-63b/authenticators/#password-verifiers"
+      })
+    ],
     tier: {
       track: "Human authentication & MFA",
       grade: "D",
@@ -134,10 +159,14 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      {
-        label: "OpenID4VP 1.0",
-        url: "https://openid.net/specs/openid-4-verifiable-presentations-1_0.html"
-      }
+      citeEvidence("oidf-openid4vp-1.0", {
+        supports: [
+          "assessment-context",
+          "federation-security",
+          "protocol-definition",
+          "replay-resistance"
+        ]
+      })
     ],
     tier: {
       track: "Federation & delegated authorization",
@@ -169,7 +198,12 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      { label: "RFC 7519", url: "https://www.rfc-editor.org/rfc/rfc7519" }
+      citeEvidence("rfc-7519", {
+        supports: ["protocol-definition"]
+      }),
+      citeEvidence("rfc-8725", {
+        supports: ["threat-model", "token-security"]
+      })
     ],
     tier: {
       track: "Sessions & tokens",
@@ -201,10 +235,15 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      {
-        label: "NIST SP 800-63B §5",
+      citeEvidence("nist-sp-800-63b-4", {
+        section: "§5 Session Management",
+        supports: [
+          "assessment-context",
+          "replay-resistance",
+          "session-management"
+        ],
         url: "https://pages.nist.gov/800-63-4/sp800-63b/session/"
-      }
+      })
     ],
     tier: {
       track: "Sessions & tokens",
@@ -236,7 +275,14 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      { label: "RFC 8628", url: "https://www.rfc-editor.org/rfc/rfc8628" }
+      citeEvidence("rfc-8628", {
+        supports: [
+          "assessment-context",
+          "phishing-resistance",
+          "protocol-definition",
+          "replay-resistance"
+        ]
+      })
     ],
     tier: {
       track: "Special environments",
@@ -268,7 +314,15 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      { label: "RFC 8705", url: "https://www.rfc-editor.org/rfc/rfc8705" }
+      citeEvidence("rfc-8705", {
+        supports: [
+          "assessment-context",
+          "phishing-resistance",
+          "protocol-definition",
+          "replay-resistance",
+          "token-security"
+        ]
+      })
     ],
     tier: {
       track: "Special environments",
@@ -300,10 +354,13 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      {
-        label: "NIST SP 800-204A",
-        url: "https://csrc.nist.gov/pubs/sp/800/204/a/final"
-      }
+      citeEvidence("nist-sp-800-204a", {
+        supports: [
+          "assessment-context",
+          "threat-model",
+          "workload-identity"
+        ]
+      })
     ],
     tier: {
       track: "Machine & workload identity",
@@ -335,7 +392,16 @@ export const authenticationMethods: AuthenticationMethod[] = [
     },
     evidenceDate,
     evidence: [
-      { label: "RFC 6749 §4.4", url: "https://www.rfc-editor.org/rfc/rfc6749#section-4.4" }
+      citeEvidence("rfc-6749", {
+        section: "§4.4 Client Credentials Grant",
+        supports: ["protocol-definition", "workload-identity"],
+        url: "https://www.rfc-editor.org/rfc/rfc6749#section-4.4"
+      }),
+      citeEvidence("rfc-9700", {
+        section: "§2.5 Client Authentication",
+        supports: ["assessment-context", "threat-model", "workload-identity"],
+        url: "https://www.rfc-editor.org/rfc/rfc9700#section-2.5"
+      })
     ],
     tier: {
       track: "Machine & workload identity",
