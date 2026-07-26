@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      target: development
+    environment:
+      DATABASE_URL: postgresql://authlab:authlab@postgres:5432/authlab
+      BETTER_AUTH_SECRET: local-development-secret-change-before-production
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_MAILPIT_URL: http://localhost:8025
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_FROM: Auth Lab <auth@auth-lab.local>
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000/api/health"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  postgres:
+    image: postgres:17.10-alpine3.23
+    environment:
+      POSTGRES_DB: authlab
+      POSTGRES_USER: authlab
+      POSTGRES_PASSWORD: authlab
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_lab_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authlab -d authlab"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  mailpit:
+    image: axllent/mailpit:v1.30.4
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  auth_lab_postgres:

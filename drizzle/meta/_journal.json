@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1785024112819,
+      "tag": "0000_amazing_millenium_guard",
+      "breakpoints": true
+    }
+  ]
+}
