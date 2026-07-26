@@ -2,19 +2,21 @@ import { describe, expect, it } from "vitest";
 
 import {
   authenticationMethods,
+  classificationOrder,
   comparisonMethods,
-  methodCategories,
+  learningTracks,
   tieredMethods,
   tierTracks
 } from "@/lib/catalog";
 
 describe("authentication method catalog", () => {
-  it("has unique stable slugs and valid categories", () => {
+  it("has unique stable slugs and valid tracks", () => {
     const slugs = authenticationMethods.map((method) => method.slug);
     expect(new Set(slugs).size).toBe(slugs.length);
+    const trackNames = new Set(learningTracks.map((track) => track.name));
     expect(
       authenticationMethods.every((method) =>
-        methodCategories.includes(method.category)
+        trackNames.has(method.track)
       )
     ).toBe(true);
   });
@@ -22,11 +24,39 @@ describe("authentication method catalog", () => {
   it("exposes only the implemented interactive authentication method", () => {
     const interactiveAuthentication = authenticationMethods.filter(
       (method) =>
-        method.category === "Authentication" && method.status === "available"
+        method.category === "Authentication" && method.status === "interactive"
     );
     expect(interactiveAuthentication.map((method) => method.slug)).toEqual([
       "password"
     ]);
+  });
+
+  it("provides every evolution classification and complete evidence metadata", () => {
+    for (const classification of classificationOrder) {
+      expect(
+        authenticationMethods.some(
+          (method) => method.classification === classification
+        )
+      ).toBe(true);
+    }
+    expect(
+      authenticationMethods.every(
+        (method) =>
+          method.evolution.then &&
+          method.evolution.now &&
+          method.evolution.next &&
+          method.evidenceDate &&
+          method.evidence.length > 0
+      )
+    ).toBe(true);
+  });
+
+  it("keeps historical simulations non-interactive", () => {
+    expect(
+      authenticationMethods
+        .filter((method) => method.classification === "historical")
+        .every((method) => method.status === "simulation")
+    ).toBe(true);
   });
 
   it("keeps the catalog, comparison, and tier list in exact sync", () => {

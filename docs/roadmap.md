@@ -65,7 +65,11 @@ capabilities and commands are documented in the [README](../README.md).
 
 ### Milestone 1 — Evolution map and 2026 password guidance
 
-**Status:** Next
+**Status:** Interactive
+
+Completed on 2026-07-26. The Evolution Map, safe historical exhibits, typed
+evidence and narratives, updated password policy, local blocklist, and visible
+online-guessing defenses are documented in the [README](../README.md).
 
 **Estimate:** 1–2 days
 
@@ -95,7 +99,7 @@ capabilities and commands are documented in the [README](../README.md).
 
 ### Milestone 2 — Scalable feature structure
 
-**Status:** Planned
+**Status:** Next
 
 **Estimate:** 1–2 days
 

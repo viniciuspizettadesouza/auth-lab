@@ -42,12 +42,13 @@ export default function HomePage() {
         <div className="shell">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Method catalog</p>
-              <h2>One identity. Different proofs.</h2>
+              <p className="eyebrow">Evolution map</p>
+              <h2>Learn the path, not just the parts.</h2>
             </div>
             <p>
-              Authentication, additional factors, federation, and sessions solve
-              different problems. The catalog keeps those boundaries explicit.
+              Follow each learning track from historical patterns to modern
+              defaults. Implementation state and recommendation classification
+              remain separate: working does not automatically mean recommended.
             </p>
           </div>
           <MethodCatalog />

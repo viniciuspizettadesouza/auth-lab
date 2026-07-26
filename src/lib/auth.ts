@@ -2,12 +2,18 @@ import "server-only";
 
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 
 import { db } from "@/db";
 import { authSchema } from "@/db/schema";
 import { authRecorderPlugin } from "@/lib/auth-recorder-plugin";
 import { sendAuthEmail } from "@/lib/email";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  passwordRejectionReason
+} from "@/lib/credentials";
 import {
   appendOwnedEvent,
   attachFlowToUser,
@@ -22,6 +28,13 @@ function requestContext(request?: Request | null) {
     : null;
   return { flowId, visitorId };
 }
+
+const prospectivePasswordPaths = new Set([
+  "/sign-up/email",
+  "/reset-password",
+  "/change-password",
+  "/set-password"
+]);
 
 export const auth = betterAuth({
   appName: "Auth Lab",
@@ -38,8 +51,8 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
-    minPasswordLength: 12,
-    maxPasswordLength: 128,
+    minPasswordLength: MIN_PASSWORD_LENGTH,
+    maxPasswordLength: MAX_PASSWORD_LENGTH,
     revokeSessionsOnPasswordReset: true,
     async sendResetPassword({ user, url }, request) {
       const { flowId, visitorId } = requestContext(request);
@@ -127,6 +140,51 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
     freshAge: 60 * 30
+  },
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 100,
+    customRules: {
+      "/sign-up/email": {
+        window: 60,
+        max: 10
+      },
+      "/sign-in/email": {
+        window: 60,
+        max: 10
+      },
+      "/request-password-reset": {
+        window: 60,
+        max: 5
+      }
+    }
+  },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (!prospectivePasswordPaths.has(ctx.path)) return;
+      const body = ctx.body as
+        | { email?: unknown; password?: unknown; newPassword?: unknown }
+        | undefined;
+      const password =
+        typeof body?.password === "string"
+          ? body.password
+          : typeof body?.newPassword === "string"
+            ? body.newPassword
+            : null;
+      if (!password) return;
+
+      const reason = passwordRejectionReason(password, {
+        email: typeof body?.email === "string" ? body.email : undefined
+      });
+      if (reason === "blocked" || reason === "context-specific") {
+        throw APIError.from("BAD_REQUEST", {
+          code: "PASSWORD_BLOCKLISTED",
+          message:
+            "Choose a password that is not commonly used, compromised, or specific to this account."
+        });
+      }
+    })
   },
   advanced: {
     cookiePrefix: "auth-lab",

@@ -20,7 +20,11 @@ import {
 
 import { ComparisonTable } from "@/components/comparison-table";
 import { authClient } from "@/lib/auth-client";
-import { publicAuthError } from "@/lib/credentials";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  publicAuthError
+} from "@/lib/credentials";
 
 type Journey = "sign-up" | "sign-in" | "password-reset" | "session";
 type AuthMode = "sign-up" | "sign-in" | "forgot";
@@ -238,7 +242,9 @@ export function PasswordLab() {
       );
       setMessage({
         tone: failed ? "error" : "success",
-        text: failed ? publicAuthError(result.error?.code) : successMessage
+        text: failed
+          ? publicAuthError(result.error?.code, result.error?.status)
+          : successMessage
       });
       await refreshRecorder(flow.id);
       await refetch();
@@ -435,6 +441,22 @@ export function PasswordLab() {
                       </button>
                     ))}
                   </div>
+                  <div className="defense-strip" aria-label="Active online guessing defenses">
+                    <div>
+                      <span>Defense active</span>
+                      <strong>
+                        {mode === "sign-in"
+                          ? "10 sign-in requests / client / minute"
+                          : mode === "forgot"
+                            ? "5 reset requests / client / minute"
+                            : "Common-password screening"}
+                      </strong>
+                    </div>
+                    <p>
+                      The local lab throttles requests and never provides an
+                      automated guessing tool.
+                    </p>
+                  </div>
                   <form className="form-stack" onSubmit={handleSubmit}>
                     {mode === "sign-up" ? (
                       <div className="field">
@@ -467,14 +489,18 @@ export function PasswordLab() {
                             mode === "sign-up" ? "new-password" : "current-password"
                           }
                           id="password"
-                          minLength={12}
+                          maxLength={MAX_PASSWORD_LENGTH}
+                          minLength={MIN_PASSWORD_LENGTH}
                           onChange={(event) => setPassword(event.target.value)}
                           required
                           type="password"
                           value={password}
                         />
                         <span className="field-help">
-                          12–128 characters. The recorder stores only the field name.
+                          {MIN_PASSWORD_LENGTH}–{MAX_PASSWORD_LENGTH} characters;
+                          spaces, Unicode, paste, and password managers are welcome.
+                          Common or compromised values are blocked. The recorder
+                          stores only the field name.
                         </span>
                       </div>
                     ) : null}
@@ -619,6 +645,9 @@ export function PasswordLab() {
                   ["User provides", "An email identifier and a reusable shared secret."],
                   ["Server stores", "A one-way password hash in the credential account, never the original password."],
                   ["Identity verifier", "The application compares the submitted password against that hash."],
+                  ["Current policy", "At least 15 characters, up to 128, with no arbitrary character recipe or periodic rotation."],
+                  ["Blocklist", "New passwords are compared in full against common, compromised, and service-specific values."],
+                  ["Online guessing", "Sign-in and reset endpoints are rate-limited in every environment; production also needs distributed, account-aware abuse controls."],
                   ["Phishing resistance", "Low. A convincing origin can capture and relay both fields."],
                   ["Replay resistance", "Session cookies reduce repeated password use, but stolen credentials remain reusable."],
                   ["Recovery", "A short-lived, single-use proof delivered to the verified email inbox."],

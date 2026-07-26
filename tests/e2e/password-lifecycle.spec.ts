@@ -85,6 +85,37 @@ test("recorder responses never expose secret values", async ({ page }) => {
   expect(recorderText).not.toMatch(/better-auth\.session_token/i);
 });
 
+test("evolution map separates historical exhibits from interactive methods", async ({
+  page
+}) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Historical" })).toBeVisible();
+  const historical = page.locator('[data-classification="historical"]');
+  await expect(historical.getByText("Security questions")).toBeVisible();
+  await expect(historical.locator("input")).toHaveCount(0);
+  await expect(
+    historical.locator('[data-exhibit="non-interactive"]')
+  ).toHaveCount(3);
+
+  await page.getByRole("button", { name: "Federation" }).click();
+  const evolutionMap = page.getByLabel("Authentication evolution");
+  await expect(
+    evolutionMap.getByRole("heading", { name: "OpenID Connect" })
+  ).toBeVisible();
+  await expect(evolutionMap.getByText("Server-verified PIN")).toHaveCount(0);
+});
+
+test("registration rejects a common password with a useful reason", async ({
+  page
+}) => {
+  await page.goto("/methods/password");
+  await page.getByLabel("NAME").fill("Blocklist Test");
+  await page.getByLabel("EMAIL").fill(`blocked-${Date.now()}@example.com`);
+  await page.getByLabel("PASSWORD", { exact: true }).fill("passwordpassword");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page.getByText(/commonly used, compromised/i)).toBeVisible();
+});
+
 test("password reset invalidates old credentials and existing sessions", async ({
   browser,
   page,

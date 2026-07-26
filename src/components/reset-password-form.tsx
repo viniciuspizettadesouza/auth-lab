@@ -5,6 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH
+} from "@/lib/credentials";
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -61,13 +65,17 @@ export function ResetPasswordForm() {
             autoComplete="new-password"
             disabled={!token}
             id="new-password"
-            minLength={12}
+            maxLength={MAX_PASSWORD_LENGTH}
+            minLength={MIN_PASSWORD_LENGTH}
             onChange={(event) => setPassword(event.target.value)}
             required
             type="password"
             value={password}
           />
-          <span className="field-help">12–128 characters.</span>
+          <span className="field-help">
+            {MIN_PASSWORD_LENGTH}–{MAX_PASSWORD_LENGTH} characters. Common or
+            compromised values are rejected.
+          </span>
         </div>
         <button className="button" disabled={busy || !token || !flowId} type="submit">
           {busy ? <LoaderCircle className="animate-spin" size={15} /> : null}

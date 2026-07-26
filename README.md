@@ -6,17 +6,21 @@ conceptual model, and the [roadmap](docs/roadmap.md) for planned delivery.
 
 ## What is implemented
 
-- Registration with a 12–128 character password
+- Registration with a 15–128 character password, Unicode and password-manager
+  support, and common/compromised/context-specific password screening
 - Mandatory email verification
 - Explicit sign-in and database-backed cookie sessions
+- Always-on client throttling for sign-in and reset requests
 - Session inspection and revocation without returning session tokens
 - Generic duplicate-account and reset-request behavior
 - Password reset with existing-session revocation
 - Mailpit verification and reset emails
 - Visitor/user-owned authentication flow history
 - Ordered flow diagram and sanitized network inspector
-- Educational catalog, complete contextual comparison, and track-specific 2026
-  tier lists covering every catalog method
+- Evolution Map with track filters, contextual recommendation classifications,
+  safe historical exhibits, and `Then / Now / Next` evidence
+- Complete contextual comparison and track-specific 2026 tier lists covering
+  every catalog method
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -106,10 +110,15 @@ their default local ports.
 ## Architecture
 
 - `src/lib/catalog.ts` is the typed source of truth for method metadata,
-  comparison ratings, tier track, grade, and rationale. The catalog, comparison,
-  and tier views consume the same collection.
+  classification, learning track, evolution narrative, evidence, comparison
+  ratings, tier grade, and rationale. The map, comparison, and tier views consume
+  the same collection.
 - `src/lib/auth.ts` configures Better Auth, email delivery, session policy, and
-  database hooks.
+  database hooks, prospective-password screening, and endpoint rate limits.
+- `src/lib/credentials.ts` owns the NIST-aligned length boundary and the
+  auditable local password blocklist. A production deployment should replace
+  the demonstrative corpus with a substantially larger, maintained source and
+  distributed, account-aware abuse controls.
 - `src/lib/recorder.ts` owns ordered event persistence and ownership checks.
 - `src/lib/safe-metadata.ts` is the recorder's strict metadata boundary.
 - `src/app/api/lab` exposes owned flow history and token-free session summaries.
