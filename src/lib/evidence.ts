@@ -119,6 +119,13 @@ export const evidenceSources = {
     url: "https://www.rfc-editor.org/rfc/rfc8628",
     reviewedAt
   },
+  "rfc-8693": {
+    publisher: "IETF",
+    title: "RFC 8693",
+    status: "standard",
+    url: "https://www.rfc-editor.org/rfc/rfc8693",
+    reviewedAt: "2026-07-31"
+  },
   "rfc-8705": {
     publisher: "IETF",
     title: "RFC 8705",
@@ -146,6 +153,13 @@ export const evidenceSources = {
     status: "best-current-practice",
     url: "https://www.rfc-editor.org/rfc/rfc9700",
     reviewedAt
+  },
+  "spiffe-svid": {
+    publisher: "SPIFFE",
+    title: "SPIFFE Verifiable Identity Document",
+    status: "standard",
+    url: "https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md",
+    reviewedAt: "2026-07-31"
   },
   "w3c-webauthn-2": {
     publisher: "W3C",

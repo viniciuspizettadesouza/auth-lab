@@ -20,7 +20,14 @@ import {
   twoFactor,
   user,
   verification,
-  webauthnChallenge
+  webauthnChallenge,
+  workloadAccessGrant,
+  workloadApiKey,
+  workloadAssertionReplay,
+  workloadAuditEvent,
+  workloadClientSecret,
+  workloadProofReplay,
+  workloadPrincipal
 } from "@/db/schema/auth";
 import {
   authenticationEvent,
@@ -48,7 +55,14 @@ export const schema = {
   twoFactor,
   webauthnChallenge,
   authenticationFlow,
-  authenticationEvent
+  authenticationEvent,
+  workloadPrincipal,
+  workloadApiKey,
+  workloadAuditEvent,
+  workloadClientSecret,
+  workloadAccessGrant,
+  workloadAssertionReplay,
+  workloadProofReplay
 };
 
 export type {

@@ -242,7 +242,16 @@ administration remain intentionally outside scope.
 
 ### Milestone 8 — Machine and workload identity
 
-**Status:** Planned
+**Status:** Complete
+
+Completed on 2026-07-31. The independent machine-identity chapter now covers
+API keys and personal access tokens as the baseline, scoped service principals,
+OAuth Client Credentials, digest-only secret storage and overlap rotation,
+short-lived access grants, signed platform assertions, single-use token
+exchange, DPoP sender constraint, audit and revocation, and short-lived
+workload federation without human sessions. The existing enterprise lab
+supplies the complementary asymmetric client assertion, certificate, and mTLS
+lifecycle demonstrations.
 
 **Estimate:** 1–2 weeks
 

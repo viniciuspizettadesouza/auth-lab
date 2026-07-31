@@ -81,6 +81,15 @@ catalog claims.
 - A safe smartcard and enterprise-directory simulation covering local PIN
   activation, certificate trust and revocation, disabled identities, stale
   groups, and the separation between authentication and provisioning
+- A dedicated machine-identity lab spanning visitor-owned service principals,
+  API keys and personal-access-token trade-offs, OAuth Client Credentials,
+  one-time secret display, digest-only storage, exact audience and scope
+  enforcement, overlap rotation, five-minute access tokens, audit and
+  revocation, with no human session creation
+- Short-lived workload federation using a synthetic platform-issued 60-second
+  signed assertion, single-use OAuth Token Exchange, a two-minute token bound
+  to an ephemeral browser-generated P-256 key, exact DPoP validation, and
+  assertion/proof replay rejection
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -192,6 +201,12 @@ private-key JWT, rejects assertion replay and token use without its certificate
 binding, exercises certificate rotation/revocation, and runs smartcard and
 directory failure scenarios.
 
+The workload unit, optional database integration, and E2E tests cover key and
+client-secret shape and digesting, separate machine-principal ownership,
+audience and scope failures, overlap rotation, Client Credentials, access-grant
+revocation, signed platform-assertion exchange, DPoP binding, assertion and
+proof replay rejection, and audit isolation.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -227,6 +242,16 @@ directory failure scenarios.
 - `src/features/enterprise` contains tenant-aware enterprise SSO policy,
   private-key client authentication, certificate-bound token and lifecycle
   services, the smartcard/directory simulator, and their shared five-view lab.
+- `src/features/workload` contains the machine-identity adapters, API-key and
+  Client Credentials lifecycle services, local platform assertion and token
+  exchange boundary, DPoP-bound grants, visitor ownership, audit boundary, and
+  shared five-view workload lab.
+- `drizzle/0009_loose_jean_grey.sql` adds digest-only client secrets,
+  short-lived workload access grants, public-key bindings, and assertion/proof
+  replay caches.
+- `drizzle/0008_charming_lady_ursula.sql` adds visitor-owned workload
+  principals, digest-only API-key records, lifecycle state, and sanitized audit
+  events.
 - `drizzle/0007_chubby_kate_bishop.sql` adds enterprise tenants and memberships,
   confidential-client public keys, one-time client assertion identifiers,
   certificate lifecycle state, and certificate-bound access grants.

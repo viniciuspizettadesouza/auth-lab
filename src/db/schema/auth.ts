@@ -433,6 +433,156 @@ export const highAssuranceAccessGrant = pgTable(
   ]
 );
 
+export const workloadPrincipal = pgTable(
+  "workload_principals",
+  {
+    id: text("id").primaryKey(),
+    visitorId: text("visitor_id").notNull(),
+    name: text("name").notNull(),
+    audience: text("audience").notNull(),
+    scopes: text("scopes").notNull(),
+    status: text("status")
+      .$type<"active" | "revoked">()
+      .default("active")
+      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [index("workload_principals_visitor_idx").on(table.visitorId)]
+);
+
+export const workloadApiKey = pgTable(
+  "workload_api_keys",
+  {
+    id: text("id").primaryKey(),
+    principalId: text("principal_id")
+      .notNull()
+      .references(() => workloadPrincipal.id, { onDelete: "cascade" }),
+    digest: text("digest").notNull(),
+    hint: text("hint").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("workload_api_keys_digest_idx").on(table.digest),
+    index("workload_api_keys_principal_idx").on(table.principalId),
+    index("workload_api_keys_expiry_idx").on(table.expiresAt)
+  ]
+);
+
+export const workloadAuditEvent = pgTable(
+  "workload_audit_events",
+  {
+    id: text("id").primaryKey(),
+    principalId: text("principal_id")
+      .notNull()
+      .references(() => workloadPrincipal.id, { onDelete: "cascade" }),
+    keyId: text("key_id").references(() => workloadApiKey.id, {
+      onDelete: "set null"
+    }),
+    action: text("action").notNull(),
+    outcome: text("outcome").$type<"success" | "failure">().notNull(),
+    detail: text("detail").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    index("workload_audit_events_principal_idx").on(table.principalId),
+    index("workload_audit_events_created_idx").on(table.createdAt)
+  ]
+);
+
+export const workloadClientSecret = pgTable(
+  "workload_client_secrets",
+  {
+    id: text("id").primaryKey(),
+    principalId: text("principal_id")
+      .notNull()
+      .references(() => workloadPrincipal.id, { onDelete: "cascade" }),
+    digest: text("digest").notNull(),
+    hint: text("hint").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("workload_client_secrets_digest_idx").on(table.digest),
+    index("workload_client_secrets_principal_idx").on(table.principalId)
+  ]
+);
+
+type WorkloadPublicJwk = {
+  kty: "EC";
+  crv: "P-256";
+  x: string;
+  y: string;
+};
+
+export const workloadAccessGrant = pgTable(
+  "workload_access_grants",
+  {
+    id: text("id").primaryKey(),
+    principalId: text("principal_id")
+      .notNull()
+      .references(() => workloadPrincipal.id, { onDelete: "cascade" }),
+    tokenDigest: text("token_digest").notNull(),
+    audience: text("audience").notNull(),
+    scope: text("scope").notNull(),
+    source: text("source")
+      .$type<"client-credentials" | "workload-federation">()
+      .notNull(),
+    publicJwk: jsonb("public_jwk").$type<WorkloadPublicJwk>(),
+    keyThumbprint: text("key_thumbprint"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("workload_access_grants_digest_idx").on(table.tokenDigest),
+    index("workload_access_grants_principal_idx").on(table.principalId),
+    index("workload_access_grants_expiry_idx").on(table.expiresAt)
+  ]
+);
+
+export const workloadAssertionReplay = pgTable(
+  "workload_assertion_replays",
+  {
+    jti: text("jti").primaryKey(),
+    principalId: text("principal_id")
+      .notNull()
+      .references(() => workloadPrincipal.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [index("workload_assertion_replays_expiry_idx").on(table.expiresAt)]
+);
+
+export const workloadProofReplay = pgTable(
+  "workload_proof_replays",
+  {
+    jti: text("jti").primaryKey(),
+    grantId: text("grant_id")
+      .notNull()
+      .references(() => workloadAccessGrant.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [index("workload_proof_replays_expiry_idx").on(table.expiresAt)]
+);
+
 export const authSchema = {
   users: user,
   sessions: session,

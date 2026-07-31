@@ -14,6 +14,7 @@ by the project.
 | W3C and FIDO Alliance | WebAuthn, passkeys, authenticators, and client-to-authenticator protocols |
 | OpenID Foundation | OpenID Connect, FAPI, and portable identity specifications |
 | OASIS | SAML and enterprise federation standards |
+| SPIFFE | Workload identity and short-lived verifiable identity documents |
 | OWASP | Implementation and verification guidance |
 | MITRE CWE | Weakness taxonomy used by future defensive attack simulations |
 
