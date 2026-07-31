@@ -219,46 +219,6 @@ export const authenticationMethods: AuthenticationMethod[] = [
     }
   },
   {
-    slug: "mtls",
-    name: "Client certificate",
-    shortName: "mTLS",
-    category: "Special environments",
-    track: "Special environments",
-    classification: "high-assurance",
-    status: "coming-later",
-    summary: "The client proves possession of a private key during TLS.",
-    protocol: "mTLS / X.509",
-    evolution: {
-      then: "Managed certificates established strong client identity at the transport layer.",
-      now: "mTLS provides sender constraint with significant issuance and lifecycle overhead.",
-      next: "Use it where managed infrastructure and assurance needs justify certificate operations."
-    },
-    evidenceDate,
-    evidence: [
-      citeEvidence("rfc-8705", {
-        supports: [
-          "assessment-context",
-          "phishing-resistance",
-          "protocol-definition",
-          "replay-resistance",
-          "token-security"
-        ]
-      })
-    ],
-    tier: {
-      track: "Special environments",
-      grade: "A",
-      rationale:
-        "Strong proof of key possession for managed, high-assurance clients despite operational cost."
-    },
-    ratings: {
-      setup: "low",
-      phishingResistance: "high",
-      replayResistance: "high",
-      recovery: "low"
-    }
-  },
-  {
     slug: "api-key",
     name: "API key",
     shortName: "API key",

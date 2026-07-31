@@ -315,6 +315,124 @@ export const deviceAccessGrant = pgTable(
   ]
 );
 
+type EnterpriseProtocol = "oidc" | "saml";
+
+export const enterpriseTenant = pgTable(
+  "enterprise_tenants",
+  {
+    id: text("id").primaryKey(),
+    slug: text("slug").notNull(),
+    name: text("name").notNull(),
+    domain: text("domain").notNull(),
+    protocol: text("protocol").$type<EnterpriseProtocol>().notNull(),
+    issuer: text("issuer").notNull(),
+    ssoRequired: boolean("sso_required").default(true).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("enterprise_tenants_slug_idx").on(table.slug),
+    uniqueIndex("enterprise_tenants_domain_idx").on(table.domain)
+  ]
+);
+
+export const enterpriseMembership = pgTable(
+  "enterprise_memberships",
+  {
+    id: text("id").primaryKey(),
+    tenantId: text("tenant_id")
+      .notNull()
+      .references(() => enterpriseTenant.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    externalSubject: text("external_subject").notNull(),
+    role: text("role").$type<"member" | "admin">().default("member").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("enterprise_memberships_tenant_user_idx").on(
+      table.tenantId,
+      table.userId
+    ),
+    uniqueIndex("enterprise_memberships_tenant_subject_idx").on(
+      table.tenantId,
+      table.externalSubject
+    )
+  ]
+);
+
+type EnterprisePublicJwk = {
+  kty: "EC";
+  crv: "P-256";
+  x: string;
+  y: string;
+};
+
+export const highAssuranceClient = pgTable(
+  "high_assurance_clients",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    publicJwk: jsonb("public_jwk").$type<EnterprisePublicJwk>().notNull(),
+    activeCertificateThumbprint: text("active_certificate_thumbprint").notNull(),
+    previousCertificateThumbprint: text("previous_certificate_thumbprint"),
+    certificateStatus: text("certificate_status")
+      .$type<"active" | "revoked">()
+      .default("active")
+      .notNull(),
+    overlapEndsAt: timestamp("overlap_ends_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull()
+  }
+);
+
+export const clientAssertionReplay = pgTable(
+  "client_assertion_replays",
+  {
+    jti: text("jti").primaryKey(),
+    clientId: text("client_id")
+      .notNull()
+      .references(() => highAssuranceClient.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [index("client_assertion_replays_expires_at_idx").on(table.expiresAt)]
+);
+
+export const highAssuranceAccessGrant = pgTable(
+  "high_assurance_access_grants",
+  {
+    id: text("id").primaryKey(),
+    clientId: text("client_id")
+      .notNull()
+      .references(() => highAssuranceClient.id, { onDelete: "cascade" }),
+    tokenDigest: text("token_digest").notNull(),
+    certificateThumbprint: text("certificate_thumbprint").notNull(),
+    scope: text("scope").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("high_assurance_access_grants_digest_idx").on(table.tokenDigest),
+    index("high_assurance_access_grants_client_idx").on(table.clientId),
+    index("high_assurance_access_grants_expires_at_idx").on(table.expiresAt)
+  ]
+);
+
 export const authSchema = {
   users: user,
   sessions: session,

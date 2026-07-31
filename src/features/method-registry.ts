@@ -8,6 +8,7 @@ import { passkeyAdapter } from "@/features/passkey/adapter";
 import { federationAdapters } from "@/features/federation/adapter";
 import { sessionTokenAdapters } from "@/features/session-token/adapter";
 import { deviceFlowAdapter } from "@/features/device-flow/adapter";
+import { enterpriseAdapters } from "@/features/enterprise/adapter";
 
 export const interactiveMethodAdapters = [
   passwordMethodAdapter,
@@ -15,7 +16,8 @@ export const interactiveMethodAdapters = [
   passkeyAdapter,
   ...federationAdapters,
   ...sessionTokenAdapters,
-  deviceFlowAdapter
+  deviceFlowAdapter,
+  ...enterpriseAdapters
 ] as const;
 
 export const defaultMethod = {

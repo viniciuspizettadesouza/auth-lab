@@ -219,14 +219,15 @@ flow are documented in the [README](../README.md).
 
 ### Milestone 7 — Enterprise and high assurance
 
-**Status:** In progress
+**Status:** Complete
 
-Device Authorization Grant completed on 2026-07-31 with a real local
-constrained-client flow, QR-assisted verification, authenticated approval and
-denial, controlled polling, expiry, single-use exchange, scoped resource
-access, replay rejection, and code-phishing guidance. Enterprise SSO, FAPI,
-private-key clients, mTLS, certificates, smartcards, and directory concepts
-remain planned.
+Completed on 2026-07-31. The milestone includes the real Device Authorization
+Grant, tenant-aware enterprise OIDC/SAML policy, real ES256
+`private_key_jwt`, assertion replay defense, certificate-bound access grants,
+an explicitly simulated mTLS transport boundary with rotation and revocation,
+and safe smartcard/directory scenarios. The FAPI lab demonstrates profile
+controls and does not claim conformance. Provisioning and organization
+administration remain intentionally outside scope.
 
 **Estimate:** 1–2 weeks
 
@@ -316,8 +317,8 @@ cited standard changes:
   informs the modern federation and authorization examples.
 - [OAuth 2.0 Demonstrating Proof of Possession, RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449)
   defines DPoP sender-constrained tokens.
-- [FAPI 2.0 Security Profile](https://openid.net/specs/fapi-security-profile-2_0.html)
-  informs high-assurance authorization scenarios.
+- [FAPI 2.0 Security Profile](https://openid.net/specs/fapi-security-profile-2_0-final.html)
+  is the Final high-assurance authorization profile used by the lab.
 - [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)
   anchors the portable-identity chapter.
 - [IETF OAuth Working Group documents](https://datatracker.ietf.org/wg/oauth/documents/)

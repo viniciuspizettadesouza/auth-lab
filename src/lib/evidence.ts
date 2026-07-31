@@ -62,6 +62,14 @@ export const evidenceSources = {
     url: "https://openid.net/specs/openid-4-verifiable-presentations-1_0.html",
     reviewedAt
   },
+  "oidf-fapi-2.0-security-profile": {
+    publisher: "OpenID Foundation",
+    title: "FAPI 2.0 Security Profile",
+    edition: "Final, February 2025",
+    status: "final",
+    url: "https://openid.net/specs/fapi-security-profile-2_0-final.html",
+    reviewedAt: "2026-07-31"
+  },
   "owasp-forgot-password": {
     publisher: "OWASP",
     title: "Forgot Password Cheat Sheet",
@@ -89,6 +97,13 @@ export const evidenceSources = {
     status: "standard",
     url: "https://www.rfc-editor.org/rfc/rfc7519",
     reviewedAt
+  },
+  "rfc-7523": {
+    publisher: "IETF",
+    title: "RFC 7523",
+    status: "standard",
+    url: "https://www.rfc-editor.org/rfc/rfc7523",
+    reviewedAt: "2026-07-31"
   },
   "rfc-7636": {
     publisher: "IETF",

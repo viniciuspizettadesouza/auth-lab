@@ -69,6 +69,18 @@ catalog claims.
   QR-assisted handoff, authenticated approval and denial, polling intervals,
   `authorization_pending` and `slow_down`, expiry, atomic exchange, scoped
   resource access, and replay rejection
+- Tenant-aware enterprise OIDC/SAML policy simulation with domain discovery,
+  issuer and subject ownership, audience, time, signature, directory-group,
+  membership-mapping, enforcement, and break-glass recovery boundaries
+- FAPI 2.0 control concepts backed by real ES256 `private_key_jwt`
+  confidential-client authentication, exact audience and lifetime checks,
+  public-key registration, and assertion replay rejection; this is not a FAPI
+  conformance implementation
+- Clearly labelled mTLS transport-boundary simulation with certificate-bound
+  access tokens, stolen-token rejection, overlap rotation, and revocation
+- A safe smartcard and enterprise-directory simulation covering local PIN
+  activation, certificate trust and revocation, disabled identities, stale
+  groups, and the separation between authentication and provisioning
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -174,6 +186,12 @@ verification browser, opens the QR-equivalent complete verification URI in a
 second tab, approves the displayed client and scope, exchanges the device code,
 accesses the scoped resource, and verifies replay rejection.
 
+The enterprise/high-assurance E2E test applies tenant discovery and failure
+policy, authenticates a confidential client with a browser-generated
+private-key JWT, rejects assertion replay and token use without its certificate
+binding, exercises certificate rotation/revocation, and runs smartcard and
+directory failure scenarios.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -206,6 +224,12 @@ accesses the scoped resource, and verifies replay rejection.
 - `src/features/device-flow` contains the constrained-client adapter, two-browser
   and QR lab, user-code approval boundary, polling state machine, and scoped
   access-token service.
+- `src/features/enterprise` contains tenant-aware enterprise SSO policy,
+  private-key client authentication, certificate-bound token and lifecycle
+  services, the smartcard/directory simulator, and their shared five-view lab.
+- `drizzle/0007_chubby_kate_bishop.sql` adds enterprise tenants and memberships,
+  confidential-client public keys, one-time client assertion identifiers,
+  certificate lifecycle state, and certificate-bound access grants.
 - `drizzle/0006_spotty_nicolaos.sql` adds expiring device authorizations and
   scoped access grants. Device codes and access tokens are stored only as
   digests.
