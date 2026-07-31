@@ -11,6 +11,7 @@ import { deviceFlowAdapter } from "@/features/device-flow/adapter";
 import { enterpriseAdapters } from "@/features/enterprise/adapter";
 import { workloadAdapters } from "@/features/workload/adapter";
 import { portableAdapters } from "@/features/portable/adapter";
+import { defensiveSimulatorAdapter } from "@/features/defensive-simulator/adapter";
 
 export const interactiveMethodAdapters = [
   passwordMethodAdapter,
@@ -21,7 +22,8 @@ export const interactiveMethodAdapters = [
   deviceFlowAdapter,
   ...enterpriseAdapters,
   ...workloadAdapters,
-  ...portableAdapters
+  ...portableAdapters,
+  defensiveSimulatorAdapter
 ] as const;
 
 export const defaultMethod = {

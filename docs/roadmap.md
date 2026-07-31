@@ -294,9 +294,18 @@ policy, and audit.
 
 ### Milestone 10 — Defensive attack simulator
 
-**Status:** Planned; grows alongside milestones 3–9
+**Status:** Complete
 
 **Estimate:** 1–2 weeks of cumulative work
+
+Completed on 2026-07-31. The local defensive simulator covers all planned
+credential, link/code, recovery, session/token, OAuth, phishing/origin, and
+sender-constraint scenarios through a fixed enum of synthetic consequence
+models. Every result exposes prevention, containment, recovery, residual risk,
+and the invariants `synthetic: true` and `executed: false`. The strict local API
+rejects unknown or additional properties and provides no target, URL,
+credential, payload, traffic, timing, concurrency, redirect, token, header, or
+tool inputs, so it cannot become an operational attack runner.
 
 Build a local-only simulator using synthetic identities and controlled services:
 

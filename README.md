@@ -99,6 +99,12 @@ catalog claims.
   Final standards and active drafts, that evaluates user delegation, agent
   identity, action, resource, approval, expiry, and audit while guaranteeing
   that no tool or external action is executed
+- A local-only defensive simulator covering credential reuse and stuffing,
+  captured links and codes, push fatigue, recovery abuse, session and OAuth
+  failures, phishing resistance, and sender-constrained tokens
+- A strict simulator safety boundary using fixed scenario identifiers,
+  synthetic results, `executed: false`, and no operational target, payload,
+  traffic, token, or redirect inputs
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -221,6 +227,10 @@ issuer integrity, selective disclosure, holder-key binding, verifier audience,
 nonce, request expiry and ownership, consent denial, atomic presentation
 replay defense, status revocation, and non-executing agent policy decisions.
 
+The defensive simulator unit suite verifies that every roadmap scenario remains
+synthetic and non-executing. Its browser suite exercises all scenario families
+and verifies that the strict API rejects operational-looking extra fields.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -264,6 +274,8 @@ replay defense, status revocation, and non-executing agent policy decisions.
   local selective-disclosure and holder-proof primitives, owned presentation
   state, issuer/status/verifier service boundary, non-executing agent policy,
   and shared five-view portable identity lab.
+- `src/features/defensive-simulator` contains fixed synthetic scenario models,
+  a strict local API, recorder integration, and no free-form operational inputs.
 - `drizzle/0010_fast_cargill.sql` adds visitor-owned portable credential
   status, expiring verifier requests, and the presentation replay cache.
 - `drizzle/0009_loose_jean_grey.sql` adds digest-only client secrets,

@@ -59,6 +59,8 @@ and Attack Simulator scope are maintained in the [roadmap](roadmap.md).
 - Each new method must be complete enough to compare, inspect, recover, and test.
 - Features grow as complete vertical slices rather than partially implemented
   integrations.
+- Defensive demonstrations expose consequences and controls through fixed
+  synthetic models; they never accept operational attack targets or payloads.
 - External evidence follows the [reference policy](references.md): publication
   status and supported claims remain explicit, and project judgments are not
   attributed to standards bodies.
