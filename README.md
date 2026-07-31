@@ -65,6 +65,10 @@ catalog claims.
 - Five-minute DPoP access grants bound to browser-generated P-256 keys, with
   method, URI, time, access-token hash, signature, and single-use proof-ID
   validation plus an explicit replay demonstration
+- OAuth Device Authorization Grant with separate device and user codes,
+  QR-assisted handoff, authenticated approval and denial, polling intervals,
+  `authorization_pending` and `slow_down`, expiry, atomic exchange, scoped
+  resource access, and replay rejection
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -165,6 +169,11 @@ the real database session, runs the low-risk policy path, calls a resource with
 a browser-generated DPoP proof, and verifies that replaying that exact proof is
 rejected on desktop and mobile projects.
 
+The device-flow E2E test uses the synthetic provider to authenticate the
+verification browser, opens the QR-equivalent complete verification URI in a
+second tab, approves the displayed client and scope, exchanges the device code,
+accesses the scoped resource, and verifies replay rejection.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -194,6 +203,12 @@ rejected on desktop and mobile projects.
 - `src/features/session-token` contains the session and DPoP adapters, five-view
   lifecycle lab, risk policy, recent-assurance boundary, and proof-of-possession
   validation.
+- `src/features/device-flow` contains the constrained-client adapter, two-browser
+  and QR lab, user-code approval boundary, polling state machine, and scoped
+  access-token service.
+- `drizzle/0006_spotty_nicolaos.sql` adds expiring device authorizations and
+  scoped access grants. Device codes and access tokens are stored only as
+  digests.
 - `drizzle/0005_fluffy_kid_colt.sql` adds session-bound assurance, short-lived
   DPoP grants, public-key bindings, and the proof replay cache. Access-token
   values and private keys are never persisted.

@@ -219,45 +219,6 @@ export const authenticationMethods: AuthenticationMethod[] = [
     }
   },
   {
-    slug: "device-flow",
-    name: "Device authorization",
-    shortName: "Device flow",
-    category: "Special environments",
-    track: "Special environments",
-    classification: "recommended",
-    status: "coming-later",
-    summary: "A constrained device delegates authorization to another browser.",
-    protocol: "OAuth 2.0 Device Grant",
-    evolution: {
-      then: "TVs and command-line devices could not safely host ordinary redirect flows.",
-      now: "The device grant moves user interaction to a capable browser while the device polls.",
-      next: "Use it only for input-constrained clients and defend against code phishing."
-    },
-    evidenceDate,
-    evidence: [
-      citeEvidence("rfc-8628", {
-        supports: [
-          "assessment-context",
-          "phishing-resistance",
-          "protocol-definition",
-          "replay-resistance"
-        ]
-      })
-    ],
-    tier: {
-      track: "Special environments",
-      grade: "A",
-      rationale:
-        "The appropriate standards-based choice for devices without a practical browser or keyboard."
-    },
-    ratings: {
-      setup: "medium",
-      phishingResistance: "medium",
-      replayResistance: "high",
-      recovery: "depends"
-    }
-  },
-  {
     slug: "mtls",
     name: "Client certificate",
     shortName: "mTLS",

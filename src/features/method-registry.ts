@@ -7,13 +7,15 @@ import { milestone3Adapters } from "@/features/link-code/adapters";
 import { passkeyAdapter } from "@/features/passkey/adapter";
 import { federationAdapters } from "@/features/federation/adapter";
 import { sessionTokenAdapters } from "@/features/session-token/adapter";
+import { deviceFlowAdapter } from "@/features/device-flow/adapter";
 
 export const interactiveMethodAdapters = [
   passwordMethodAdapter,
   ...milestone3Adapters,
   passkeyAdapter,
   ...federationAdapters,
-  ...sessionTokenAdapters
+  ...sessionTokenAdapters,
+  deviceFlowAdapter
 ] as const;
 
 export const defaultMethod = {

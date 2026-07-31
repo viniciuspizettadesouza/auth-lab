@@ -219,7 +219,14 @@ flow are documented in the [README](../README.md).
 
 ### Milestone 7 — Enterprise and high assurance
 
-**Status:** Planned
+**Status:** In progress
+
+Device Authorization Grant completed on 2026-07-31 with a real local
+constrained-client flow, QR-assisted verification, authenticated approval and
+denial, controlled polling, expiry, single-use exchange, scoped resource
+access, replay rejection, and code-phishing guidance. Enterprise SSO, FAPI,
+private-key clients, mTLS, certificates, smartcards, and directory concepts
+remain planned.
 
 **Estimate:** 1–2 weeks
 

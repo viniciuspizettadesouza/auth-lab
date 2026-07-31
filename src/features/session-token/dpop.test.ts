@@ -80,8 +80,15 @@ describe("DPoP proof boundary", () => {
 
   it("rejects signature tampering", () => {
     const valid = fixture();
+    const parts = valid.proof.split(".");
+    const signature = parts[2] ?? "";
+    const tamperedSignature =
+      `${signature[0] === "A" ? "B" : "A"}${signature.slice(1)}`;
     expect(
-      verifyDpopProof({ ...valid, proof: `${valid.proof.slice(0, -1)}x` })
+      verifyDpopProof({
+        ...valid,
+        proof: `${parts[0]}.${parts[1]}.${tamperedSignature}`
+      })
     ).toEqual({ ok: false, reason: "invalid-proof" });
   });
 });

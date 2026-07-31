@@ -261,6 +261,60 @@ export const oidcAuthorizationCode = pgTable(
   ]
 );
 
+export const oauthDeviceAuthorization = pgTable(
+  "oauth_device_authorizations",
+  {
+    id: text("id").primaryKey(),
+    clientId: text("client_id").notNull(),
+    userCode: text("user_code").notNull(),
+    scope: text("scope").notNull(),
+    status: text("status")
+      .$type<"pending" | "approved" | "denied" | "consumed">()
+      .default("pending")
+      .notNull(),
+    userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    intervalSeconds: integer("interval_seconds").default(3).notNull(),
+    pollCount: integer("poll_count").default(0).notNull(),
+    lastPolledAt: timestamp("last_polled_at", { withTimezone: true }),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("oauth_device_authorizations_user_code_idx").on(table.userCode),
+    index("oauth_device_authorizations_expires_at_idx").on(table.expiresAt),
+    index("oauth_device_authorizations_user_id_idx").on(table.userId)
+  ]
+);
+
+export const deviceAccessGrant = pgTable(
+  "device_access_grants",
+  {
+    id: text("id").primaryKey(),
+    authorizationId: text("authorization_id")
+      .notNull()
+      .references(() => oauthDeviceAuthorization.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    tokenDigest: text("token_digest").notNull(),
+    scope: text("scope").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("device_access_grants_token_digest_idx").on(table.tokenDigest),
+    uniqueIndex("device_access_grants_authorization_idx").on(table.authorizationId),
+    index("device_access_grants_expires_at_idx").on(table.expiresAt)
+  ]
+);
+
 export const authSchema = {
   users: user,
   sessions: session,

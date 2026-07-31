@@ -1566,6 +1566,30 @@ code,
   font-size: 10px;
 }
 
+.device-handoff {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(104,217,233,.24);
+  border-radius: 10px;
+  background: rgba(104,217,233,.04);
+}
+
+.device-user-code {
+  display: block;
+  margin: 8px 0;
+  color: var(--cyan);
+  font: 700 26px/1 "SFMono-Regular", Consolas, monospace;
+  letter-spacing: .12em;
+}
+
+.qr-code {
+  max-width: 100%;
+  border: 8px solid white;
+  border-radius: 8px;
+  background: white;
+}
+
 .history-sidebar {
   position: sticky;
   top: 86px;
