@@ -142,46 +142,6 @@ export const authenticationMethods: AuthenticationMethod[] = [
   },
   ...interactiveMethodAdapters.map((adapter) => adapter.metadata),
   {
-    slug: "verifiable-presentation",
-    name: "Verifiable presentation",
-    shortName: "OID4VP",
-    category: "Federation",
-    track: "Federation & delegated authorization",
-    classification: "emerging",
-    status: "coming-later",
-    summary:
-      "A wallet presents selected claims from portable credentials to a verifier.",
-    protocol: "OpenID4VP",
-    evolution: {
-      then: "Federation tied identity claims to an online provider interaction.",
-      now: "Wallet protocols can present holder-controlled credentials with selective disclosure.",
-      next: "Track ecosystem trust, privacy, revocation, and interoperability before broad production use."
-    },
-    evidenceDate,
-    evidence: [
-      citeEvidence("oidf-openid4vp-1.0", {
-        supports: [
-          "assessment-context",
-          "federation-security",
-          "protocol-definition",
-          "replay-resistance"
-        ]
-      })
-    ],
-    tier: {
-      track: "Federation & delegated authorization",
-      grade: "B",
-      rationale:
-        "Promising portable identity with ecosystem and privacy choices that remain context-dependent."
-    },
-    ratings: {
-      setup: "low",
-      phishingResistance: "depends",
-      replayResistance: "high",
-      recovery: "depends"
-    }
-  },
-  {
     slug: "jwt-session",
     name: "JWT session",
     shortName: "JWT",

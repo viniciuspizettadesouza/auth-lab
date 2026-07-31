@@ -268,7 +268,19 @@ Show the evolution independently from human login:
 
 ### Milestone 9 — Portable and future identity
 
-**Status:** Planned
+**Status:** Complete
+
+Completed on 2026-07-31. The portable identity lab implements a synthetic
+issuer-wallet-verifier ceremony over the Final OpenID4VP 1.0 protocol model,
+with compact selectively disclosed claims, browser-held P-256 holder proof,
+explicit consent and denial, exact audience and nonce binding, expiry, atomic
+consumption, replay defense, credential status revocation, correlation and
+recovery guidance, and sanitized visitor ownership. The credential format is
+explicitly a local model rather than an SD-JWT VC conformance claim while that
+credential profile remains an Internet-Draft. Agent delegated authorization is
+an Emerging, non-executing product exhibit that labels its draft evidence and
+separates user authority, agent identity, action context, approval, expiry,
+policy, and audit.
 
 **Estimate:** 1–2 weeks
 

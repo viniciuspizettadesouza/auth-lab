@@ -583,6 +583,56 @@ export const workloadProofReplay = pgTable(
   (table) => [index("workload_proof_replays_expiry_idx").on(table.expiresAt)]
 );
 
+export const portableCredential = pgTable(
+  "portable_credentials",
+  {
+    id: text("id").primaryKey(),
+    visitorId: text("visitor_id").notNull(),
+    holderThumbprint: text("holder_thumbprint").notNull(),
+    status: text("status").$type<"active" | "revoked">().default("active").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [index("portable_credentials_visitor_idx").on(table.visitorId)]
+);
+
+export const portablePresentationRequest = pgTable(
+  "portable_presentation_requests",
+  {
+    id: text("id").primaryKey(),
+    visitorId: text("visitor_id").notNull(),
+    nonceDigest: text("nonce_digest").notNull(),
+    audience: text("audience").notNull(),
+    requestedClaims: jsonb("requested_claims").$type<string[]>().notNull(),
+    status: text("status")
+      .$type<"pending" | "consumed" | "denied">()
+      .default("pending")
+      .notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    consumedAt: timestamp("consumed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [
+    uniqueIndex("portable_presentation_requests_nonce_idx").on(table.nonceDigest),
+    index("portable_presentation_requests_visitor_idx").on(table.visitorId),
+    index("portable_presentation_requests_expiry_idx").on(table.expiresAt)
+  ]
+);
+
+export const portablePresentationReplay = pgTable(
+  "portable_presentation_replays",
+  {
+    jti: text("jti").primaryKey(),
+    requestId: text("request_id")
+      .notNull()
+      .references(() => portablePresentationRequest.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [index("portable_presentation_replays_expiry_idx").on(table.expiresAt)]
+);
+
 export const authSchema = {
   users: user,
   sessions: session,

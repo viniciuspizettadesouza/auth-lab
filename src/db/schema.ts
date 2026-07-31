@@ -15,6 +15,9 @@ import {
   oidcAuthorizationCode,
   passkey,
   passkeyKind,
+  portableCredential,
+  portablePresentationReplay,
+  portablePresentationRequest,
   session,
   sessionAssurance,
   twoFactor,
@@ -62,7 +65,10 @@ export const schema = {
   workloadClientSecret,
   workloadAccessGrant,
   workloadAssertionReplay,
-  workloadProofReplay
+  workloadProofReplay,
+  portableCredential,
+  portablePresentationRequest,
+  portablePresentationReplay
 };
 
 export type {

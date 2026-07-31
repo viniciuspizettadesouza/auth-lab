@@ -56,6 +56,13 @@ OAuth 2.0 examples use the published RFC 6749, PKCE in RFC 7636, and the OAuth
 security Best Current Practice in RFC 9700. OAuth 2.1 remains work in progress
 and should not replace those published references until its status changes.
 
+OpenID for Verifiable Presentations 1.0 is recorded as an OpenID Final
+Specification. Selective Disclosure for JWTs is the published RFC 9901, while
+the SD-JWT VC credential profile remains an active Internet-Draft and is
+labelled as work in progress. Agent-specific OAuth authorization profiles are
+also treated as drafts and product experiments rather than established
+production recommendations.
+
 ## Internal documents
 
 External references are evidence, not design records:

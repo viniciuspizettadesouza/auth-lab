@@ -71,6 +71,13 @@
       "when": 1785517281334,
       "tag": "0009_loose_jean_grey",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1785518215251,
+      "tag": "0010_fast_cargill",
+      "breakpoints": true
     }
   ]
 }

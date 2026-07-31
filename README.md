@@ -90,6 +90,15 @@ catalog claims.
   signed assertion, single-use OAuth Token Exchange, a two-minute token bound
   to an ephemeral browser-generated P-256 key, exact DPoP validation, and
   assertion/proof replay rejection
+- A portable identity lab modeling the Final OpenID4VP 1.0
+  issuer-wallet-verifier ceremony with a synthetic selectively disclosed
+  credential, browser-held P-256 holder binding, explicit consent and denial,
+  exact audience and two-minute nonce binding, atomic consumption, replay and
+  expiry rejection, status revocation, and no local session creation
+- An Emerging agent-authorization policy exhibit, visibly distinguished from
+  Final standards and active drafts, that evaluates user delegation, agent
+  identity, action, resource, approval, expiry, and audit while guaranteeing
+  that no tool or external action is executed
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -207,6 +216,11 @@ audience and scope failures, overlap rotation, Client Credentials, access-grant
 revocation, signed platform-assertion exchange, DPoP binding, assertion and
 proof replay rejection, and audit isolation.
 
+The portable identity unit, optional database integration, and E2E tests cover
+issuer integrity, selective disclosure, holder-key binding, verifier audience,
+nonce, request expiry and ownership, consent denial, atomic presentation
+replay defense, status revocation, and non-executing agent policy decisions.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -246,6 +260,12 @@ proof replay rejection, and audit isolation.
   Client Credentials lifecycle services, local platform assertion and token
   exchange boundary, DPoP-bound grants, visitor ownership, audit boundary, and
   shared five-view workload lab.
+- `src/features/portable` contains the OpenID4VP and agent-exhibit adapters,
+  local selective-disclosure and holder-proof primitives, owned presentation
+  state, issuer/status/verifier service boundary, non-executing agent policy,
+  and shared five-view portable identity lab.
+- `drizzle/0010_fast_cargill.sql` adds visitor-owned portable credential
+  status, expiring verifier requests, and the presentation replay cache.
 - `drizzle/0009_loose_jean_grey.sql` adds digest-only client secrets,
   short-lived workload access grants, public-key bindings, and assertion/proof
   replay caches.

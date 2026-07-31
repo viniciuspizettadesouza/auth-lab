@@ -4,6 +4,9 @@ await sqlClient.unsafe(`
   TRUNCATE TABLE
     authentication_events,
     authentication_flows,
+    portable_presentation_replays,
+    portable_presentation_requests,
+    portable_credentials,
     workload_proof_replays,
     workload_assertion_replays,
     workload_access_grants,

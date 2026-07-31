@@ -59,8 +59,8 @@ export const evidenceSources = {
     publisher: "OpenID Foundation",
     title: "OpenID4VP 1.0",
     status: "final",
-    url: "https://openid.net/specs/openid-4-verifiable-presentations-1_0.html",
-    reviewedAt
+    url: "https://openid.net/specs/openid-4-verifiable-presentations-1_0-final.html",
+    reviewedAt: "2026-07-31"
   },
   "oidf-fapi-2.0-security-profile": {
     publisher: "OpenID Foundation",
@@ -153,6 +153,29 @@ export const evidenceSources = {
     status: "best-current-practice",
     url: "https://www.rfc-editor.org/rfc/rfc9700",
     reviewedAt
+  },
+  "rfc-9901": {
+    publisher: "IETF",
+    title: "RFC 9901",
+    status: "standard",
+    url: "https://www.rfc-editor.org/rfc/rfc9901",
+    reviewedAt: "2026-07-31"
+  },
+  "draft-ietf-oauth-sd-jwt-vc-16": {
+    publisher: "IETF",
+    title: "SD-JWT-based Verifiable Digital Credentials",
+    edition: "draft-ietf-oauth-sd-jwt-vc-16",
+    status: "internet-draft",
+    url: "https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/16/",
+    reviewedAt: "2026-07-31"
+  },
+  "draft-aap-oauth-profile-01": {
+    publisher: "IETF",
+    title: "Agent Authorization Profile for OAuth 2.0",
+    edition: "draft-aap-oauth-profile-01",
+    status: "internet-draft",
+    url: "https://datatracker.ietf.org/doc/draft-aap-oauth-profile/01/",
+    reviewedAt: "2026-07-31"
   },
   "spiffe-svid": {
     publisher: "SPIFFE",

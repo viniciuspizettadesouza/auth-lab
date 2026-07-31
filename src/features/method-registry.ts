@@ -10,6 +10,7 @@ import { sessionTokenAdapters } from "@/features/session-token/adapter";
 import { deviceFlowAdapter } from "@/features/device-flow/adapter";
 import { enterpriseAdapters } from "@/features/enterprise/adapter";
 import { workloadAdapters } from "@/features/workload/adapter";
+import { portableAdapters } from "@/features/portable/adapter";
 
 export const interactiveMethodAdapters = [
   passwordMethodAdapter,
@@ -19,7 +20,8 @@ export const interactiveMethodAdapters = [
   ...sessionTokenAdapters,
   deviceFlowAdapter,
   ...enterpriseAdapters,
-  ...workloadAdapters
+  ...workloadAdapters,
+  ...portableAdapters
 ] as const;
 
 export const defaultMethod = {
