@@ -7,7 +7,7 @@ export default defineConfig({
   dbCredentials: {
     url:
       process.env.DATABASE_URL ??
-      "postgresql://authlab:authlab@localhost:5432/authlab"
+      "postgresql://authlab:authlab@localhost:5433/authlab"
   },
   strict: true,
   verbose: true

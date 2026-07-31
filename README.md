@@ -146,8 +146,12 @@ npm run db:migrate
 npm run dev
 ```
 
-When Next.js runs on the host, change `DATABASE_URL` to use `localhost` and
-`SMTP_HOST` to `localhost`.
+When Next.js runs on the host, set:
+
+```dotenv
+DATABASE_URL=postgresql://authlab:authlab@localhost:5433/authlab
+SMTP_HOST=localhost
+```
 
 Useful commands:
 
@@ -161,6 +165,23 @@ npm run lint
 npm run test:run
 npm run build
 ```
+
+### Local troubleshooting
+
+- `ECONNREFUSED` on PostgreSQL means the database is not reachable, rather
+  than an application query failure. Compose exposes PostgreSQL to host-run
+  Next.js on port `5433`; start `postgres` and `mailpit`, then run
+  `npm run db:migrate` before starting the app.
+- Browser extensions and development tools can modify the DOM before React
+  hydrates it. Attributes such as `data-qb-installed` identify extension
+  injection. Disable the extension for `localhost` and hard-refresh when that
+  occurs.
+- Next's hidden streaming-metadata wrapper was also mutated by local browser
+  tooling during development. `next.config.ts` therefore disables streaming
+  metadata only in development; production retains the Next.js default.
+- The global smooth-scroll CSS is intentional. The root layout declares
+  `data-scroll-behavior="smooth"` so Next can handle route-transition scroll
+  restoration without a development warning.
 
 `db:seed` creates `demo@auth-lab.local` with password
 `correct horse battery staple`; verify it through Mailpit before signing in.

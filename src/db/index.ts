@@ -7,7 +7,7 @@ import * as schema from "@/db/schema";
 
 const databaseUrl =
   process.env.DATABASE_URL ??
-  "postgresql://authlab:authlab@localhost:5432/authlab";
+  "postgresql://authlab:authlab@localhost:5433/authlab";
 
 const globalForDatabase = globalThis as unknown as {
   sqlClient?: ReturnType<typeof postgres>;
