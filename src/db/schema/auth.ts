@@ -2,6 +2,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -47,6 +48,73 @@ export const session = pgTable(
     uniqueIndex("sessions_token_idx").on(table.token),
     index("sessions_user_id_idx").on(table.userId)
   ]
+);
+
+export const sessionAssurance = pgTable(
+  "session_assurances",
+  {
+    sessionId: text("session_id")
+      .primaryKey()
+      .references(() => session.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    level: text("level")
+      .$type<"phishing-resistant">()
+      .notNull(),
+    verifiedAt: timestamp("verified_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [index("session_assurances_user_id_idx").on(table.userId)]
+);
+
+type DpopPublicJwk = {
+  kty: "EC";
+  crv: "P-256";
+  x: string;
+  y: string;
+};
+
+export const dpopAccessGrant = pgTable(
+  "dpop_access_grants",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    sessionId: text("session_id")
+      .notNull()
+      .references(() => session.id, { onDelete: "cascade" }),
+    tokenDigest: text("token_digest").notNull(),
+    publicJwk: jsonb("public_jwk").$type<DpopPublicJwk>().notNull(),
+    keyThumbprint: text("key_thumbprint").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("dpop_access_grants_token_digest_idx").on(table.tokenDigest),
+    index("dpop_access_grants_user_id_idx").on(table.userId),
+    index("dpop_access_grants_expires_at_idx").on(table.expiresAt)
+  ]
+);
+
+export const dpopProofReplay = pgTable(
+  "dpop_proof_replays",
+  {
+    jti: text("jti").primaryKey(),
+    grantId: text("grant_id")
+      .notNull()
+      .references(() => dpopAccessGrant.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [index("dpop_proof_replays_expires_at_idx").on(table.expiresAt)]
 );
 
 export const account = pgTable(

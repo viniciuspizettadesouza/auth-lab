@@ -1187,6 +1187,23 @@ code,
   gap: 14px;
 }
 
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.button-row .button {
+  flex: 1 1 150px;
+}
+
+.panel-rule {
+  width: 100%;
+  margin: 2px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
 .defense-strip {
   padding: 12px;
   margin-bottom: 14px;
@@ -1486,6 +1503,13 @@ code,
 .request-status.success { color: var(--accent); }
 .request-status.failure { color: var(--red); }
 
+.request-note {
+  margin: 0;
+  padding: 0 12px 11px;
+  color: var(--faint);
+  font: 9px/1.45 "SFMono-Regular", Consolas, monospace;
+}
+
 .request-details {
   display: flex;
   flex-wrap: wrap;
@@ -1529,6 +1553,17 @@ code,
   color: var(--muted);
   font-size: 12px;
   line-height: 1.55;
+}
+
+.session-token-matrix {
+  margin-top: 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.session-token-matrix .explanation-item p + p {
+  margin-top: 7px;
+  color: var(--faint);
+  font-size: 10px;
 }
 
 .history-sidebar {

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { listSessionSummaries } from "@/services/session/service";
+import { sessionLabState } from "@/services/session/service";
 
 export async function GET(request: NextRequest) {
-  const sessions = await listSessionSummaries(request.headers);
-  if (!sessions) {
+  const state = await sessionLabState(request.headers);
+  if (!state) {
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   }
 
-  return NextResponse.json({ sessions });
+  return NextResponse.json(state);
 }

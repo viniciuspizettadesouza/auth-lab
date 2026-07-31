@@ -188,7 +188,7 @@ export const authenticationMethods: AuthenticationMethod[] = [
     category: "Sessions",
     track: "Sessions & tokens",
     classification: "transitional",
-    status: "coming-later",
+    status: "simulation",
     summary: "Signed claims carry session state without a database lookup.",
     protocol: "JWT",
     evolution: {
@@ -216,46 +216,6 @@ export const authenticationMethods: AuthenticationMethod[] = [
       phishingResistance: "not-applicable",
       replayResistance: "medium",
       recovery: "medium"
-    }
-  },
-  {
-    slug: "cookie-session",
-    name: "Database cookie session",
-    shortName: "Cookie session",
-    category: "Sessions",
-    track: "Sessions & tokens",
-    classification: "recommended",
-    status: "interactive",
-    summary: "An opaque cookie references a revocable server-side session.",
-    protocol: "HTTP cookie",
-    evolution: {
-      then: "Server sessions let applications preserve authentication without resending credentials.",
-      now: "Opaque, protected cookies provide a simple revocable browser-session default.",
-      next: "Add rotation, expiry, concurrent-session controls, and step-up for sensitive actions."
-    },
-    evidenceDate,
-    evidence: [
-      citeEvidence("nist-sp-800-63b-4", {
-        section: "§5 Session Management",
-        supports: [
-          "assessment-context",
-          "replay-resistance",
-          "session-management"
-        ],
-        url: "https://pages.nist.gov/800-63-4/sp800-63b/session/"
-      })
-    ],
-    tier: {
-      track: "Sessions & tokens",
-      grade: "A",
-      rationale:
-        "A strong browser default with straightforward server-side revocation and lifecycle control."
-    },
-    ratings: {
-      setup: "high",
-      phishingResistance: "not-applicable",
-      replayResistance: "medium",
-      recovery: "high"
     }
   },
   {

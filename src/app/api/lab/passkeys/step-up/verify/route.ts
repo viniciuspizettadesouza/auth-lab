@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     challengeId: parsed.data.challengeId,
     origin: request.headers.get("origin"),
     response: parsed.data.response as unknown as AuthenticationResponseJSON,
-    userId: session.user.id
+    userId: session.user.id,
+    sessionId: session.session.id
   });
   if (!result.ok) {
     const status = result.reason === "expired-or-replayed" ? 409 : 400;

@@ -55,6 +55,16 @@ catalog claims.
   signatures, request correlation, audience, destination, time windows,
   replay, certificate rollover, and account-linking boundaries without
   accepting executable XML or creating a session
+- A dedicated sessions and tokens lab comparing opaque cookies, access and
+  refresh tokens, JWTs, and DPoP without presenting token formats as login
+  methods
+- Visible session cookie policy, fixation defense, sliding renewal, absolute
+  expiry, logout, owned revocation, and fresh-session concurrent controls
+- Risk-triggered authorization that persists five-minute, session-bound
+  phishing-resistant assurance only after a real roaming security-key ceremony
+- Five-minute DPoP access grants bound to browser-generated P-256 keys, with
+  method, URI, time, access-token hash, signature, and single-use proof-ID
+  validation plus an explicit replay demonstration
 
 Password hashes, submitted passwords, verification/reset tokens, raw cookies,
 authorization headers, and arbitrary request bodies are never accepted by the
@@ -150,6 +160,11 @@ uses a development-only symmetric ID-token signature because both roles live
 inside one process. A real external adapter should use provider discovery and
 asymmetric signature verification; never reuse the local signing arrangement.
 
+The sessions/tokens E2E test signs in through the synthetic provider, inspects
+the real database session, runs the low-risk policy path, calls a resource with
+a browser-generated DPoP proof, and verifies that replaying that exact proof is
+rejected on desktop and mobile projects.
+
 ## Architecture
 
 - `src/lib/catalog.ts` assembles the typed source of truth for method metadata,
@@ -176,6 +191,12 @@ asymmetric signature verification; never reuse the local signing arrangement.
 - `src/features/federation` contains the OIDC and SAML adapters, protocol
   primitives, local-provider boundary, five educational views, explicit
   linking/unlinking policy, and safe conflict demonstrations.
+- `src/features/session-token` contains the session and DPoP adapters, five-view
+  lifecycle lab, risk policy, recent-assurance boundary, and proof-of-possession
+  validation.
+- `drizzle/0005_fluffy_kid_colt.sql` adds session-bound assurance, short-lived
+  DPoP grants, public-key bindings, and the proof replay cache. Access-token
+  values and private keys are never persisted.
 - `drizzle/0004_shiny_christian_walker.sql` adds atomically consumable,
   one-minute authorization codes bound to the client, redirect URI, nonce,
   subject, and S256 PKCE challenge.

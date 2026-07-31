@@ -20,6 +20,7 @@ import {
   WEBAUTHN_CHALLENGE_TTL_SECONDS,
   webauthnRelyingParty
 } from "@/features/passkey/server/config";
+import { recordPhishingResistantAssurance } from "@/features/session-token/server/risk";
 
 export type StepUpFailure =
   | "expired-or-replayed"
@@ -91,12 +92,14 @@ export async function verifySecurityKeyStepUp({
   challengeId,
   origin,
   response,
-  userId
+  userId,
+  sessionId
 }: {
   challengeId: string;
   origin: string | null;
   response: AuthenticationResponseJSON;
   userId: string;
+  sessionId?: string;
 }) {
   const relyingParty = webauthnRelyingParty();
   if (origin !== relyingParty.origin) {
@@ -168,6 +171,9 @@ export async function verifySecurityKeyStepUp({
       .update(passkey)
       .set({ counter: verification.authenticationInfo.newCounter })
       .where(eq(passkey.id, credential.id));
+    if (sessionId) {
+      await recordPhishingResistantAssurance(sessionId, userId);
+    }
     return { ok: true as const };
   } catch {
     return { ok: false as const, reason: "invalid-proof" as const };

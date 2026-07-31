@@ -6,12 +6,14 @@ import {
 import { milestone3Adapters } from "@/features/link-code/adapters";
 import { passkeyAdapter } from "@/features/passkey/adapter";
 import { federationAdapters } from "@/features/federation/adapter";
+import { sessionTokenAdapters } from "@/features/session-token/adapter";
 
 export const interactiveMethodAdapters = [
   passwordMethodAdapter,
   ...milestone3Adapters,
   passkeyAdapter,
-  ...federationAdapters
+  ...federationAdapters,
+  ...sessionTokenAdapters
 ] as const;
 
 export const defaultMethod = {

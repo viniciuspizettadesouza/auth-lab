@@ -3,10 +3,13 @@ export * from "@/db/schema/recorder";
 
 import {
   account,
+  dpopAccessGrant,
+  dpopProofReplay,
   oidcAuthorizationCode,
   passkey,
   passkeyKind,
   session,
+  sessionAssurance,
   twoFactor,
   user,
   verification,
@@ -20,6 +23,9 @@ import {
 export const schema = {
   user,
   session,
+  sessionAssurance,
+  dpopAccessGrant,
+  dpopProofReplay,
   account,
   oidcAuthorizationCode,
   passkey,

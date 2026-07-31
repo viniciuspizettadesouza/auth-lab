@@ -199,7 +199,13 @@ enterprise simulation are documented in the [README](../README.md).
 
 ### Milestone 6 — Sessions, tokens, and step-up
 
-**Status:** Planned
+**Status:** Complete
+
+Completed on 2026-07-31. The dedicated sessions and tokens lab, visible cookie
+and server-session lifecycle, owned concurrent-session controls,
+risk-triggered security-key step-up, persisted recent assurance, contextual
+JWT/access/refresh-token comparison, and real local DPoP proof-of-possession
+flow are documented in the [README](../README.md).
 
 **Estimate:** 4–7 days
 

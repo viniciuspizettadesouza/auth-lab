@@ -92,8 +92,8 @@ export function MethodCatalog() {
                   {methods.map((method) => {
                     const href =
                       getMethodAdapter(method.slug)?.route ??
-                      (method.slug === "cookie-session"
-                        ? "/methods/password"
+                      (method.slug === "jwt-session"
+                        ? "/methods/sessions"
                         : null);
                     const content = (
                       <>

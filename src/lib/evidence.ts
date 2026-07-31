@@ -118,6 +118,13 @@ export const evidenceSources = {
     url: "https://www.rfc-editor.org/rfc/rfc8725",
     reviewedAt
   },
+  "rfc-9449": {
+    publisher: "IETF",
+    title: "RFC 9449",
+    status: "standard",
+    url: "https://www.rfc-editor.org/rfc/rfc9449",
+    reviewedAt
+  },
   "rfc-9700": {
     publisher: "IETF",
     title: "RFC 9700",

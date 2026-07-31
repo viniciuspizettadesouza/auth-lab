@@ -36,6 +36,13 @@
       "when": 1785081551107,
       "tag": "0004_shiny_christian_walker",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785457902286,
+      "tag": "0005_fluffy_kid_colt",
+      "breakpoints": true
     }
   ]
 }
