@@ -319,6 +319,40 @@ Build a local-only simulator using synthetic identities and controlled services:
 It must explain protections and consequences without becoming an operational
 attack toolkit.
 
+### Milestone 11 — Production deployment
+
+**Status:** Planned
+
+Deploy the complete interactive lab to a platform with a persistent Node.js
+runtime rather than GitHub Pages. GitHub Pages remains unsuitable because it
+only serves static artifacts, while Auth Lab depends on dynamic route handlers,
+cookie sessions, PostgreSQL persistence, email delivery, and short-lived
+protocol state.
+
+- Add a production Docker stage that runs the committed migrations and the
+  standalone Next.js server instead of the development server.
+- Provision managed PostgreSQL and a production SMTP provider, keeping all
+  credentials in platform-managed secrets.
+- Configure the public HTTPS origin consistently for Better Auth, WebAuthn,
+  redirects, cookies, and the local protocol demonstrations.
+- Add a GitHub Actions workflow that runs lint, type checking, tests, and the
+  production build before deploying the container.
+- Deploy to a container-capable Node.js platform such as Render, Railway, or
+  Fly.io; record the selected provider and operational configuration once the
+  choice is made.
+- Document database migration, health-check, rollback, secret rotation, and
+  deployment verification procedures.
+
+**Done when:**
+
+- The public HTTPS deployment passes its health check and serves every method
+  page.
+- Registration, email verification, sign-in, recovery, session persistence,
+  and representative protocol flows work against production services.
+- A push to `main` deploys only after the required validation checks pass.
+- No development secret, localhost callback, Mailpit dependency, or raw
+  credential is present in the production configuration.
+
 ## Release rule for every interactive method
 
 An interactive method is complete only when it:
